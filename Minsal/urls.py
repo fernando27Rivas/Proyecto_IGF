@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import url,include
 from django.contrib import admin
-
-
+from Proyecto_web import  views
 urlpatterns = [
+
     url(r'^', include('Proyecto_web.urls')),
     url(r'^admin/', admin.site.urls),
+
 
 ]

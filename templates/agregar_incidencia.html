@@ -1,0 +1,43 @@
+
+{% load static %}
+{% include 'material/includes/material_css.html' %}
+<script src="{% static 'material/js/jquery.js' %}"></script>
+{% include 'material/includes/material_js.html' %}
+{% load material_form %}
+
+{% block content %}
+    <main id="movermain">
+    <form action="" method="POST" class="viewform">
+        {% csrf_token %}
+         <h5> Datos de Incidencia: </h5>
+        {% form form=incidencia_form %}
+            {% part form.fecha_mantenimiento prefix %} <i class="material-icons prefix">account_box</i>{% endpart %}
+            {% part form.causa prefix %}<i class="material-icons prefix">account_box</i>{% endpart %}
+            {% part form.consecuencia prefix %}<i class="material-icons prefix">call</i>{% endpart %}
+        {% endform %}
+
+        <h5> Datos de mantenimiento: </h5>
+
+        {% form form=mantenimiento_form %}
+            {% part form.fecha prefix %} <i class="material-icons prefix">date_range</i>{% endpart %}
+            {% part form.costo prefix %}<i class="material-icons prefix">poll</i>{% endpart %}
+            {% part form.descripcion prefix %} <i class="material-icons prefix"> description</i>{% endpart %}
+            {% part form.id_proveedor prefix %}<i class="material-icons prefix">assignment</i>{% endpart %}
+        {% endform %}
+
+
+        <button class="btn btn-primary"  type="submit" name="action" >Registrar
+					<i class="material-icons right">send</i>
+         </button>
+
+
+    </form>
+
+
+
+    <script type="text/javascript">
+            (function () { Materialize.toast('{{ mensaje }}', 4000, 'rounded') })();
+    </script>
+
+</main>
+{% endblock %}

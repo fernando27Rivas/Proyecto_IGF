@@ -60,7 +60,8 @@ ROOT_URLCONF = 'Minsal.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')]
+        ,
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -73,6 +74,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'Minsal.wsgi.application'
 
@@ -109,6 +111,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/

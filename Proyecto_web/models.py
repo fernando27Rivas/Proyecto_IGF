@@ -9,6 +9,12 @@ from __future__ import unicode_literals
 
 from django.db import models
 
+CHOICES =(
+
+    ('1','Activo'),
+    ('0','Inactivo'),
+)
+
 
 class Vehiculo(models.Model):
     id_vehiculo = models.AutoField(primary_key=True)
@@ -24,7 +30,7 @@ class Vehiculo(models.Model):
 
 class Visita(models.Model):
     id_visita = models.AutoField(primary_key=True)
-    fecha = models.DateField(blank=True, null=True)
+    fecha = models.DateField(blank=True, help_text = 'Formato: DD/MM/AAAA', null=True)
     id_vehiculo = models.ForeignKey(Vehiculo, models.DO_NOTHING, db_column='id_vehiculo', blank=True, null=True)
     hora_inicio = models.TimeField(blank=True, null=True)
     hora_fin = models.TimeField(blank=True, null=True)
@@ -47,7 +53,7 @@ class UnidadOrganizacional(models.Model):
     id_unidad_organizacional = models.AutoField(primary_key=True)
     unidad_padre = models.SmallIntegerField(blank=True, null=True)
     unidad_hija = models.SmallIntegerField(blank=True, null=True)
-    id_vehiculo = models.ForeignKey('Vehiculo', models.DO_NOTHING, db_column='id_vehiculo', blank=True, null=True)
+    id_vehiculo = models.ForeignKey(Vehiculo, models.DO_NOTHING, db_column='id_vehiculo', blank=True, null=True)
 
     class Meta:
         managed = False
@@ -55,11 +61,11 @@ class UnidadOrganizacional(models.Model):
 
 class Incidencia(models.Model):
     id_incidencia = models.AutoField(primary_key=True)
-    fecha_mantenimiento = models.DateField(blank=True, null=True)
+    fecha_mantenimiento = models.DateField(blank=True, null=False)
     causa = models.CharField(max_length=75, blank=True, null=True)
     consecuencia = models.CharField(max_length=100, blank=True, null=True)
-    id_vehiculo = models.ForeignKey('Vehiculo', models.DO_NOTHING, db_column='id_vehiculo', blank=True, null=True)
-    id_visita = models.ForeignKey('Visita', models.DO_NOTHING, db_column='id_visita', blank=True, null=True)
+    id_vehiculo = models.ForeignKey(Vehiculo, models.DO_NOTHING, db_column='id_vehiculo', blank=True, null=False)
+    id_visita = models.ForeignKey(Visita, models.DO_NOTHING, db_column='id_visita', blank=True, null=False)
 
     class Meta:
         managed = False
@@ -71,10 +77,10 @@ class Mantenimiento(models.Model):
     tipo = models.SmallIntegerField(blank=True, null=True)
     descripcion = models.CharField(max_length=100, blank=True, null=True)
     costo = models.FloatField(blank=True, null=True)
-    fecha = models.DateField(blank=True, null=True)
-    id_proveedor = models.ForeignKey('Proveedor', models.DO_NOTHING, db_column='id_proveedor', blank=True, null=True)
-    id_incidencia = models.ForeignKey('Incidencia', models.DO_NOTHING, db_column='id_incidencia', blank=True, null=True)
-    id_vehiculo = models.ForeignKey('Vehiculo', models.DO_NOTHING, db_column='id_vehiculo', blank=True, null=True)
+    fecha = models.DateField(blank=True,help_text = 'Formato: DD/MM/AAAA', null=True)
+    id_proveedor = models.ForeignKey(Proveedor, models.DO_NOTHING, db_column='id_proveedor', blank=True, null=True)
+    id_incidencia = models.ForeignKey(Incidencia, models.DO_NOTHING, db_column='id_incidencia', blank=True, null=True)
+    id_vehiculo = models.ForeignKey(Vehiculo, models.DO_NOTHING, db_column='id_vehiculo', blank=True, null=True)
 
     class Meta:
         managed = False
