@@ -87,33 +87,24 @@ def Crear_Incidencia (request,id_visita):
         mantenimiento_form=MantenimientoForm(request.POST or None, prefix='mantenimiento')
 
         if incidencia_form.is_valid():
-
-             tfecha= incidencia_form.cleaned_data['fecha_mantenimiento']
-             tcausa= incidencia_form.cleaned_data['causa']
-             tconsecuencia = incidencia_form.cleaned_data['consecuencia']
-             visita=Visita.objects.get(pk=id_visita)
-             vehiculo=Vehiculo.objects.get(pk=visita.id_visita)
-
-             incidencia=Incidencia.objects.create(
-                 fecha_mantenimiento=tfecha,
-                 causa=tcausa,
-                 consecuencia=tconsecuencia,
-                 id_visita=visita,
-                 id_vehiculo=vehiculo,
-             )
+             visita = Visita.objects.get(pk=id_visita)
+             vehiculo = Vehiculo.objects.get(pk=visita.id_visita)
 
              if mantenimiento_form.is_valid():
                 #Registro de Mantenimiento
                 tfecha = mantenimiento_form.cleaned_data['fecha_actual']
                 tdescripcion = mantenimiento_form.cleaned_data['descripcion']
-                #tcosto = float(mantenimiento_form.cleaned_data['costo'])
+                if (mantenimiento_form.cleaned_data['costo']):
+                    tcosto = float(mantenimiento_form.cleaned_data['costo'])
+                else:
+                    tcosto = 0
                 tproveedor = mantenimiento_form.cleaned_data['id_proveedor']
 
                 mante = Mantenimiento.objects.create(
                    fecha_actual=tfecha,
                    descripcion=tdescripcion,
-                   tipo=0,  # Tipo=1 asumiento que 2 es Correctivo
-                   costo=0,
+                   tipo=0,  # Tipo=0 asumiento que  es Correctivo
+                   costo=tcosto,
                    id_vehiculo=vehiculo,
                    id_proveedor=tproveedor,
 
@@ -121,6 +112,23 @@ def Crear_Incidencia (request,id_visita):
 
              else:
                  mantenimiento_form=None
+
+
+             tfecha= incidencia_form.cleaned_data['fecha_mantenimiento']
+             tcausa= incidencia_form.cleaned_data['causa']
+             tconsecuencia = incidencia_form.cleaned_data['consecuencia']
+
+
+             incidencia=Incidencia.objects.create(
+                 fecha_mantenimiento=tfecha,
+                 causa=tcausa,
+                 consecuencia=tconsecuencia,
+                 id_visita=visita,
+                 id_vehiculo=vehiculo,
+                 id_mantenimiento=mante
+             )
+
+
              mensaje="Registro la Incidencia de la visita"+ str(visita.id_visita)+"con placas"+vehiculo.placa
              #Vaciando Formulario
              incidencia_form=IncidenciaForm(prefix='incidencia') #Vaciando El formulario
@@ -175,10 +183,9 @@ def consultarIncidencias(request,id_vehiculo):
        try:
         incidencias_list = Incidencia.objects.filter(id_vehiculo=id_vehiculo)
         placa=Vehiculo.objects.get(pk=id_vehiculo)
-        mantenimiento_list=Mantenimiento.objects.filter(id_vehiculo=id_vehiculo)
+
         return render(request, 'consultar_incidencia.html',
-                      {'incidencias_list': incidencias_list,'placa':placa,
-                       'mantenimiento_list':mantenimiento_list })
+                      {'incidencias_list': incidencias_list,'placa':placa, })
 
        except :
         raise Http404("Error en URL")

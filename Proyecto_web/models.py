@@ -17,7 +17,7 @@ class Incidencia(models.Model):
     consecuencia = models.CharField(max_length=100, blank=False, null=False)
     id_vehiculo = models.ForeignKey('Vehiculo', models.DO_NOTHING, db_column='id_vehiculo', blank=True, null=True)
     id_visita = models.ForeignKey('Visita', models.DO_NOTHING, db_column='id_visita', blank=True, null=True)
-
+    id_mantenimiento=models.ForeignKey('Mantenimiento', models.DO_NOTHING, db_column='id_mantenimiento', blank=False, null=False)
     class Meta:
         managed = False
         db_table = 'incidencia'

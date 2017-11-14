@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+ <html>
+      <head>
+           <title>MPJ</title>
+           <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+           <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+           <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+           <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" />
+           <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
+      </head>
+      <body>
+           <br /><br />
+           <div class="container">
+                <h3 align="center">Consulta de Incidencias del vehiculo placas: {{ placa.placa }}</h3>
+                <br />
+
+                <div class="table-responsive">
+                     <table id="employee_data" class="table table-striped table-bordered table-hover" data-toggle="bootgrid">
+                       <thead>
+                           <tr>
+                               <th>Causa </th>
+                               <th>Consecuencia  </th>
+                               <th>Fecha</th>
+                               <th>Mantenimiento</th>
+                               <th>Gestionar</th>
+
+                           </tr>
+                       </thead>
+                       <tfoot>
+                            <tr>
+                              <th>Causa </th>
+                               <th>Consecuencia  </th>
+                               <th>Fecha</th>
+                               <th>Mantenimiento</th>
+                               <th>Gestionar</th>
+
+                           </tr>
+                         </tfoot>
+
+                         <tbody>
+                            {% for incidencias in incidencias_list %}
+
+
+                          <tr>
+                           <td>{{incidencias.causa}}</td>
+                           <td>{{incidencias.consecuencia}}</td>
+                           <td>{{incidencias.fecha_mantenimiento}}</td>
+                               {% if incidencias.id_mantenimiento_id is not None %}
+
+                                    {% if incidencias.id_mantenimiento.id_proveedor is not None%}
+                                          <td> {{ incidencias.id_mantenimiento.id_proveedor.nombre }}</td>
+                                    {% else %}
+                                           <td> Mantenimiento Interno</td>
+
+                                    {% endif %}
+                               {% else %}
+                                <td>Sin Mantenimiento</td>
+                               {% endif %}
+
+                             <td>
+                             <a class="btn btn-primary" href="/actualizar_incidencia/{{incidencias.id_incidencia}}">
+                                 <i class="material-icons">edit</i></a>
+
+                             </td>
+                           </tr>
+
+                            {% endfor %}
+			              </tbody>
+                     </table>
+                </div>
+           </div>
+
+      </body>
+ </html>
+
+ <script type="text/javascript">
+ $(document).ready(function() {
+   $('#employee_data').DataTable( {
+     "language": {
+        "sProcessing":     "Procesando...",
+        "sLengthMenu":     "Mostrar _MENU_ registros",
+        "sZeroRecords":    "No se encontraron resultados",
+        "sEmptyTable":     "NingÃºn dato disponible en esta tabla",
+        "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+        "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+        "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+        "sInfoPostFix":    "",
+        "sSearch":         "Buscar:",
+        "sUrl":            "",
+        "sInfoThousands":  ",",
+        "sLoadingRecords": "Cargando...",
+        "oPaginate": {
+            "sFirst":    "Primero",
+            "sLast":     "Ãšltimo",
+            "sNext":     "Siguiente",
+            "sPrevious": "Anterior"
+        },
+        "oAria": {
+            "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+        }
+  }
+  } );
+ } );
+ </script>
+
+ <script>
+ $(document).ready(function(){
+      $('#employee_data').DataTable();
+ });
+ </script>
