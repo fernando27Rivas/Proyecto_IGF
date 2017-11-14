@@ -4,39 +4,47 @@ from django.views.generic.detail import DetailView
 from django.shortcuts import render
 from models import Incidencia,Mantenimiento,Vehiculo,Visita
 from .forms import *
-
+from django.shortcuts import render, redirect, HttpResponseRedirect
+from django.http import Http404
 #Para Crear el Mantenimiento
 def Agregar_preventivo(request,vehiculo_id):
     mensaje=""
     if request.method=='GET':
-        mantenimiento_form=MantenimientoForm(prefix='mantenimiento')
+        mantenimiento_form=PreventivoForm(prefix='mantenimiento')
 
     #Cuando es POST
     if request.method=='POST':
-        mantenimiento_form=MantenimientoForm(request.POST or None, prefix='mantenimiento')
+        mantenimiento_form=PreventivoForm(request.POST or None, prefix='mantenimiento')
         if mantenimiento_form.is_valid():
+
+         if (mantenimiento_form.cleaned_data['fecha_proximo']):
+
             vehi=Vehiculo.objects.get(pk=vehiculo_id)
 
-            tfecha=mantenimiento_form.cleaned_data['fecha']
+            tfecha=mantenimiento_form.cleaned_data['fecha_actual']
             tdescripcion= mantenimiento_form.cleaned_data['descripcion']
-            tcosto = float(mantenimiento_form.cleaned_data['costo'])
+            if (mantenimiento_form.cleaned_data['costo']):
+             tcosto = float(mantenimiento_form.cleaned_data['costo'])
+            else:
+                tcosto=0
             tproveedor=mantenimiento_form.cleaned_data['id_proveedor']
+            tproximo = mantenimiento_form.cleaned_data['fecha_proximo']
             mante=Mantenimiento.objects.create(
-                fecha=tfecha,
+                fecha_actual=tfecha,
                 descripcion=tdescripcion,
                 tipo=1, #Tipo=1 asumiento que 1 es preventivo
                 costo=tcosto,
                 id_vehiculo=vehi,
                 id_proveedor=tproveedor,
-                id_incidencia=None
-
+                fecha_proximo=tproximo
 
                 )
             #Limpiando campos despues de guardar
 
             mensaje="Mantenimiento registrado a "+ vehi.placa
-            mantenimiento_form=MantenimientoForm(prefix='mantenimiento')
-
+            mantenimiento_form=PreventivoForm(prefix='mantenimiento')
+         else:
+             mensaje=" Error Programe el proximo Mantenimiento"
 
     extra_context = {
     'mantenimiento_form':mantenimiento_form,
@@ -51,15 +59,18 @@ def Actualizar_Prevetivo(request,id_mantenimiento):
     mensaje = ""
     mantenimiento=Mantenimiento.objects.get(pk=id_mantenimiento)
 
-    mantenimiento_form = MantenimientoForm(data=request.POST or None, instance=mantenimiento)
+    mantenimiento_form = PreventivoForm(data=request.POST or None, instance=mantenimiento)
 
     if request.method == 'POST':
 
        if mantenimiento_form.is_valid():
-           mantenimiento_form.save()
-           mensaje = "Modifico con exito"
+           if(mantenimiento_form.cleaned_data['fecha_proximo']):
+            mantenimiento_form.save()
+            mensaje = "Modifico con exito"
+           else:
+               mensaje="Error Agregue el Proximo Mantenimiento"
        else:
-           mensaje="Error"
+           mensaje="Error Campos Obligatorios"
 
     return render(request, 'agregar_mantenimiento.html', {'mantenimiento_form': mantenimiento_form,
                                  'mensaje': mensaje, })
@@ -93,19 +104,19 @@ def Crear_Incidencia (request,id_visita):
 
              if mantenimiento_form.is_valid():
                 #Registro de Mantenimiento
-                tfecha = mantenimiento_form.cleaned_data['fecha']
+                tfecha = mantenimiento_form.cleaned_data['fecha_actual']
                 tdescripcion = mantenimiento_form.cleaned_data['descripcion']
                 #tcosto = float(mantenimiento_form.cleaned_data['costo'])
                 tproveedor = mantenimiento_form.cleaned_data['id_proveedor']
 
                 mante = Mantenimiento.objects.create(
-                   fecha=tfecha,
+                   fecha_actual=tfecha,
                    descripcion=tdescripcion,
-                   tipo=2,  # Tipo=1 asumiento que 2 es Correctivo
+                   tipo=0,  # Tipo=1 asumiento que 2 es Correctivo
                    costo=0,
                    id_vehiculo=vehiculo,
                    id_proveedor=tproveedor,
-                   id_incidencia=incidencia
+
                   )
 
              else:
@@ -136,11 +147,39 @@ def actualizar_Incidencia(request,id_incidencia):
            incidencia_form.save()
            mensaje = "Modifico con exito"
        else:
-           mensaje="Error"
+           mensaje="Error Formulario Vacio"
     else:
-        mensaje="nada"
+        mensaje=""
 
 
     return render(request, 'actualizar_incidencia.html', {'incidencia_form': incidencia_form,
                                  'mensaje': mensaje, })
 
+
+
+def Mantenimientos(request,id_vehiculo):
+   # if request.user.has_perm('donaciones.change_donador') or request.user.has_perm(
+    #    'donaciones.delete_donador'):
+       try:
+        mantenimientos_list = Mantenimiento.objects.filter(id_vehiculo=id_vehiculo)
+        placa=Vehiculo.objects.get(pk=id_vehiculo)
+        return render(request, 'consultar_mantenimientos.html', {'mantenimientos_list': mantenimientos_list,'placa':placa })
+
+       except :
+        raise Http404("Error en URL")
+        return HttpResponseRedirect('/admin')
+
+def consultarIncidencias(request,id_vehiculo):
+   # if request.user.has_perm('donaciones.change_donador') or request.user.has_perm(
+    #    'donaciones.delete_donador'):
+       try:
+        incidencias_list = Incidencia.objects.filter(id_vehiculo=id_vehiculo)
+        placa=Vehiculo.objects.get(pk=id_vehiculo)
+        mantenimiento_list=Mantenimiento.objects.filter(id_vehiculo=id_vehiculo)
+        return render(request, 'consultar_incidencia.html',
+                      {'incidencias_list': incidencias_list,'placa':placa,
+                       'mantenimiento_list':mantenimiento_list })
+
+       except :
+        raise Http404("Error en URL")
+        return HttpResponseRedirect('/admin')

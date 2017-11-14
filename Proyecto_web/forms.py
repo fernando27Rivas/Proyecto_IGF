@@ -23,13 +23,13 @@ class IncidenciaForm(forms.ModelForm):
 class MantenimientoForm(forms.ModelForm):
       class Meta:
         model=Mantenimiento
-        fields = ('fecha', 'descripcion','costo','id_proveedor')
+        fields = ('fecha_actual', 'descripcion','costo','id_proveedor')
         widgets = {
 
             'id_proveedor': forms.Select()
         }
         layout = Layout(Fieldset('Informacion Mantenimiento:',
-                                 Row('fecha',), Row('descripcion',), Row('costo',), Row('id_proveedor',)
+                                 Row('fecha_actual',), Row('descripcion',), Row('costo',), Row('id_proveedor',)
                                  )
                         )
 
@@ -37,3 +37,22 @@ class MantenimientoForm(forms.ModelForm):
       def __init__(self, *args, **kwargs):
             super(MantenimientoForm, self).__init__(*args, **kwargs)
             self.fields['id_proveedor'].widget = forms.Select(choices=[('', 'Interno')]+list ([(x.id_proveedor, x.nombre) for x in Proveedor.objects.all()]))
+
+class PreventivoForm(forms.ModelForm):
+          class Meta:
+              model = Mantenimiento
+              fields = ('fecha_actual', 'descripcion', 'costo', 'id_proveedor','fecha_proximo')
+              widgets = {
+
+                  'id_proveedor': forms.Select()
+              }
+              layout = Layout(Fieldset('Informacion Mantenimiento:',
+                                       Row('fecha_actual', ), Row('descripcion', ), Row('costo', ),
+                                       Row('id_proveedor','fecha_proximo' )
+                                       )
+                              )
+
+          def __init__(self, *args, **kwargs):
+              super(PreventivoForm, self).__init__(*args, **kwargs)
+              self.fields['id_proveedor'].widget = forms.Select(
+                  choices=[('', 'Interno')] + list([(x.id_proveedor, x.nombre) for x in Proveedor.objects.all()]))
