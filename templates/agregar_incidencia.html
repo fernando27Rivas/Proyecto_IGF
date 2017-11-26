@@ -11,7 +11,7 @@
         {% csrf_token %}
          <h5> Datos de Incidencia: </h5>
         {% form form=incidencia_form %}
-            {% part form.fecha_mantenimiento prefix %} <i class="material-icons prefix">account_box</i>{% endpart %}
+            {% part form.fecha prefix %} <i class="material-icons prefix">account_box</i>{% endpart %}
             {% part form.causa prefix %}<i class="material-icons prefix">account_box</i>{% endpart %}
             {% part form.consecuencia prefix %}<i class="material-icons prefix">call</i>{% endpart %}
         {% endform %}

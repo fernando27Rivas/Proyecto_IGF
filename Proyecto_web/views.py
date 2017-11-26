@@ -11,43 +11,45 @@ def Agregar_preventivo(request,vehiculo_id):
     mensaje=""
     if request.method=='GET':
         mantenimiento_form=PreventivoForm(prefix='mantenimiento')
-
+        vehiculo_form=ProximoForm(prefix='proximo')
     #Cuando es POST
     if request.method=='POST':
         mantenimiento_form=PreventivoForm(request.POST or None, prefix='mantenimiento')
-        if mantenimiento_form.is_valid():
+        vehiculo_form = ProximoForm(request.POST or None, prefix='proximo')
+        if mantenimiento_form.is_valid()& vehiculo_form.is_valid():
 
-         if (mantenimiento_form.cleaned_data['fecha_proximo']):
+
 
             vehi=Vehiculo.objects.get(pk=vehiculo_id)
-
+            tproveedor = mantenimiento_form.cleaned_data['proveedor']
             tfecha=mantenimiento_form.cleaned_data['fecha_actual']
             tdescripcion= mantenimiento_form.cleaned_data['descripcion']
             if (mantenimiento_form.cleaned_data['costo']):
              tcosto = float(mantenimiento_form.cleaned_data['costo'])
             else:
                 tcosto=0
-            tproveedor=mantenimiento_form.cleaned_data['id_proveedor']
-            tproximo = mantenimiento_form.cleaned_data['fecha_proximo']
+
+            vehi.proximo_mantenimiento=vehiculo_form.cleaned_data['proximo_mantenimiento'] #Actualizar en vehiculo
+
+            vehi.save()
             mante=Mantenimiento.objects.create(
                 fecha_actual=tfecha,
                 descripcion=tdescripcion,
                 tipo=1, #Tipo=1 asumiento que 1 es preventivo
                 costo=tcosto,
                 id_vehiculo=vehi,
-                id_proveedor=tproveedor,
-                fecha_proximo=tproximo
-
+                proveedor=tproveedor,
                 )
             #Limpiando campos despues de guardar
 
             mensaje="Mantenimiento registrado a "+ vehi.placa
             mantenimiento_form=PreventivoForm(prefix='mantenimiento')
-         else:
-             mensaje=" Error Programe el proximo Mantenimiento"
+            vehiculo_form=ProximoForm(prefix='proximo')
+
 
     extra_context = {
     'mantenimiento_form':mantenimiento_form,
+    'vehiculo_form':vehiculo_form,
     'mensaje': mensaje,
     'vehiculo_id':vehiculo_id
      }
@@ -58,22 +60,21 @@ def Agregar_preventivo(request,vehiculo_id):
 def Actualizar_Prevetivo(request,id_mantenimiento):
     mensaje = ""
     mantenimiento=Mantenimiento.objects.get(pk=id_mantenimiento)
-
+    vehiculo=mantenimiento.id_vehiculo
     mantenimiento_form = PreventivoForm(data=request.POST or None, instance=mantenimiento)
-
+    vehiculo_form = ProximoForm(data=request.POST or None, instance=vehiculo)
     if request.method == 'POST':
 
-       if mantenimiento_form.is_valid():
-           if(mantenimiento_form.cleaned_data['fecha_proximo']):
+       if mantenimiento_form.is_valid() & vehiculo_form.is_valid():
+
             mantenimiento_form.save()
-            mensaje = "Modifico con exito"
-           else:
-               mensaje="Error Agregue el Proximo Mantenimiento"
+            vehiculo_form.save()
+            mensaje="Actualizacion exitosa"
        else:
            mensaje="Error Campos Obligatorios"
 
     return render(request, 'agregar_mantenimiento.html', {'mantenimiento_form': mantenimiento_form,
-                                 'mensaje': mensaje, })
+                                 'mensaje': mensaje,'vehiculo_form':vehiculo_form })
 
 def Crear_Incidencia (request,id_visita):
     mensaje = ""
@@ -114,13 +115,13 @@ def Crear_Incidencia (request,id_visita):
                  mantenimiento_form=None
 
 
-             tfecha= incidencia_form.cleaned_data['fecha_mantenimiento']
+             tfecha= incidencia_form.cleaned_data['fecha']
              tcausa= incidencia_form.cleaned_data['causa']
              tconsecuencia = incidencia_form.cleaned_data['consecuencia']
 
 
              incidencia=Incidencia.objects.create(
-                 fecha_mantenimiento=tfecha,
+                 fecha=tfecha,
                  causa=tcausa,
                  consecuencia=tconsecuencia,
                  id_visita=visita,
@@ -142,6 +143,8 @@ def Crear_Incidencia (request,id_visita):
       }
 
     return render(request, 'agregar_incidencia.html', extra_context)
+
+
 
 def actualizar_Incidencia(request,id_incidencia):
     mensaje = ""

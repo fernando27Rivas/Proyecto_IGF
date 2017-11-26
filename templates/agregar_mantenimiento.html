@@ -14,8 +14,12 @@
             {% part form.fecha_actual prefix %} <i class="material-icons prefix">date_range</i>{% endpart %}
             {% part form.costo prefix %}<i class="material-icons prefix">poll</i>{% endpart %}
             {% part form.descripcion prefix %} <i class="material-icons prefix"> description</i>{% endpart %}
-            {% part form.fecha_proximo prefix %}<i class="material-icons prefix">assignment</i>{% endpart %}
-            {% part form.id_proveedor prefix %}<i class="material-icons prefix">assignment</i>{% endpart %}
+            {% part form.proveedor prefix %}<i class="material-icons prefix">assignment</i>{% endpart %}
+        {% endform %}
+
+
+        {% form form=vehiculo_form %}
+            {% part form.proximo_mantenimiento prefix %} <i class="material-icons prefix">date_range</i>{% endpart %}
         {% endform %}
 
         <button class="btn btn-primary"  type="submit" name="action" >Registrar

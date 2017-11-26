@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-
+from django.db import models
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -26,6 +26,7 @@ SECRET_KEY = '4-7$b-h(l@*j)u*_@!m(*7nw90dte=b%0*by1d!lyqawy&7e+&'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
 
 
 # Application definition
@@ -45,6 +46,8 @@ INSTALLED_APPS = [
 
 ]
 
+##AUTH_USER_MODEL = 'Proyecto_web.MyUser'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -56,6 +59,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'Minsal.urls'
+LOGOUT_REDIRECT_URL = '/admin/login/'
+LOGIN_URL = '/login'
 
 TEMPLATES = [
     {
@@ -85,7 +90,7 @@ WSGI_APPLICATION = 'Minsal.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'Base',
+        'NAME': 'base_igf',
         'USER': 'postgres',
         'PASSWORD': 'admin',
         'HOST': 'localhost',
