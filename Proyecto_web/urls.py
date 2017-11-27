@@ -15,4 +15,8 @@ urlpatterns=[
     #URL de Correctivos
     url(r'^agregar_correctivo/(?P<incidencia_id>[0-9]+)$', views.Agregar_correctivo, name='correctivo'),
     ## Los correctivos no se van a actualizar
+    # URLS para la visita
+    url(r'^solicitud_visita/$', views.SolicitarVisita, name='solicitud'),
+    url(r'^lista_solicitudes/$', views.Lista_solicitud, name='lista_solicitudes'),
+    url(r'^resolucion_solicitud/(?P<id_solicitud>[0-9]+)$', views.Resolucion_solicitud, name='resolucion_solicitu'),
     ]

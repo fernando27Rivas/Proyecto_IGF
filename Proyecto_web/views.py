@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.views.generic.edit import CreateView
+from django.contrib.auth.models import User, Permission
 from django.shortcuts import render
-from models import Incidencia,Mantenimiento,Vehiculo,Visita
+from models import Incidencia,Mantenimiento,Vehiculo,Visita,UnidadOrganizacional
 from .forms import *
 from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.http import Http404
@@ -207,3 +207,91 @@ def Agregar_correctivo(request,incidencia_id):
 
     return render(request, 'agregar_correctivo.html', extra_context)
 
+def SolicitarVisita(request):
+    mensaje = ""
+    user = User.objects.get()
+    if request.method == 'GET':
+        visita_form = SolicitudForm(prefix='solicitud')
+
+    # Cuando es POST
+    if request.method == 'POST':
+        visita_form = SolicitudForm(request.POST or None,prefix='solicitud')
+
+        if visita_form.is_valid():
+            tfecha_inicio = visita_form.cleaned_data['fecha_inicio']
+            tdestino = visita_form.cleaned_data['destino']
+            tfecha_fin=visita_form.cleaned_data['fecha_fin']
+
+            visita = Visita.objects.create(
+                fecha_inicio=tfecha_inicio,
+                fecha_fin=tfecha_fin,
+                destino=tdestino,
+                estado=1, # Solicitada
+                id_unidad=UnidadOrganizacional.objects.get(pk=1)
+            )
+
+
+            # Limpiando campos despues de guardar
+            mensaje = " Solicitud de visita del Usuario "+ user.get_username()
+            visita_form = SolicitudForm(prefix='solicitud')
+        else:
+
+            mensaje="Error en Formato " + user.get_username()
+
+    extra_context = {
+        'visita_form': visita_form,
+        'mensaje': mensaje,
+
+    }
+    return render(request, 'solicitar_visita.html', extra_context)
+
+def Lista_solicitud(request):
+    if request.user.has_perm('Proyecto_web.change_mantenimiento'):
+       try:
+        visitas_list = Visita.objects.filter(id_unidad=1,estado=1)
+        return render(request, 'lista_solicitudes.html', {'visitas_list': visitas_list,})
+       except :
+        raise Http404("Error en URL")
+        return HttpResponseRedirect('/admin')
+
+def Resolucion_solicitud(request,id_solicitud):
+    mensaje = ""
+    user = User.objects.get()
+    visita=Visita.objects.get(pk=id_solicitud)
+
+    if request.method == 'GET':
+        resolucion_form = ResolucionForm(prefix='resolucion')
+
+    # Cuando es POST
+    if request.method == 'POST':
+        resolucion_form = ResolucionForm(request.POST or None, prefix='resolucion')
+
+        if (request.POST.get('id_vehiculo')):
+            tvehiculo = resolucion_form.cleaned_data['id_vehiculo']
+            #Validamos SI se selecciono Conductor
+            if (resolucion_form.cleaned_data['id_conductor']):
+             tconductor = resolucion_form.cleaned_data['id_conductor']
+            else:
+             tconductor=None
+
+            visita.id_conductor = tconductor
+            visita.id_vehiculo=tvehiculo
+            visita.estado=2
+            tvehiculo.estado=2
+            tvehiculo.save()
+             #Gurdamos el estado de la Solicitud
+            visita.save()
+
+            # Limpiando campos despues de guardar
+            mensaje = " Solicitud de visita del Usuario " + user.get_username()
+            visita_form = SolicitudForm(prefix='solicitud')
+        else:
+
+            mensaje = "Error en Formato " + user.get_username()
+
+    extra_context = {
+        'resolucion_form': resolucion_form,
+        'mensaje': mensaje,
+
+    }
+    return render(request, 'resolucion_visita.html', extra_context)

@@ -1,0 +1,46 @@
+{% load static %}
+{% include 'material/includes/material_css.html' %}
+<script src="{% static 'material/js/jquery.js' %}"></script>
+{% include 'material/includes/material_js.html' %}
+{% load material_form %}
+
+{% block content %}
+    <main id="movermain">
+    <form action="" method="POST" class="viewform">
+        {% csrf_token %}
+         <h5> Asignacion de Vehiculo: </h5>
+        {% form form=resolucion_form %}
+            {% part form.id_vehiculo prefix %} <i class="material-icons prefix">account_box</i>{% endpart %}
+            {% part form.id_conductor prefix %}<i class="material-icons prefix">account_box</i>{% endpart %}
+
+        {% endform %}
+
+        <button class="btn btn-primary"  type="submit" name="action" >Registrar
+					<i class="material-icons right">send</i>
+         </button>
+
+
+
+    </form>
+
+
+    <script type="text/javascript">
+            $('input[name="mantenimiento-fecha_actual"]').datepicker({
+                format: "dd/mm/yyyy",
+                todayBtn: "linked",
+                maxViewMode: 3,
+                autoclose: true,
+                language: "es",
+                daysOfWeekHighlighted: "0",
+                clearBtn: true,
+                todayHighlight: true
+            });
+       </script>
+
+
+    <script type="text/javascript">
+            (function () { Materialize.toast('{{ mensaje }}', 4000, 'rounded') })();
+    </script>
+
+</main>
+{% endblock %}
