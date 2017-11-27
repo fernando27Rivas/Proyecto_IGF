@@ -32,7 +32,7 @@ class Mantenimiento(models.Model):
     tipo = models.BooleanField('Tipo',blank=False,null=False)
     descripcion = models.CharField(max_length=100)
     costo = models.FloatField(blank=False, null=False, validators = [MinValueValidator(0)])
-    fecha_actual = models.DateField()
+    fecha_actual = models.DateField('Fecha Mantenimiento')
     proveedor = models.ForeignKey('Proveedor', models.DO_NOTHING, db_column='id_proveedor', blank=True, null=True)
     id_vehiculo = models.ForeignKey('Vehiculo', models.DO_NOTHING, db_column='id_vehiculo', blank=False, null=False)
 

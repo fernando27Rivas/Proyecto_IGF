@@ -5,10 +5,14 @@ urlpatterns=[
 
 
     #url(r'^$', views.home, name='home'),
+    #URL de Preventivos
     url(r'^agregar_preventivo/(?P<vehiculo_id>[0-9]+)$', views.Agregar_preventivo, name='preventivo'),
     url(r'^actualizar/(?P<id_mantenimiento>[0-9]+)$', views.Actualizar_Prevetivo, name='actualizar'),
-    url(r'^agregar_incidencia/(?P<id_visita>[0-9]+)$', views.Crear_Incidencia, name='incidencia'),
-    url(r'^actualizar_incidencia/(?P<id_incidencia>[0-9]+)$', views.actualizar_Incidencia, name='incidencia_actualizada'),
-    url(r'^incidencias/(?P<id_vehiculo>[0-9]+)$', views.consultarIncidencias, name='consultarincidencias'),
     url(r'^mantenimientos/(?P<id_vehiculo>[0-9]+)$', views.Mantenimientos, name='mantenimientos'),
+    # URL de Incidencias
+    url(r'^agregar_incidencia/(?P<id_visita>[0-9]+)$', views.Agregar_incidencia, name='incidencia'),
+    url(r'^incidencias/(?P<id_vehiculo>[0-9]+)$', views.consultarIncidencias, name='consultarincidencias'),
+    #URL de Correctivos
+    url(r'^agregar_correctivo/(?P<incidencia_id>[0-9]+)$', views.Agregar_correctivo, name='correctivo'),
+    ## Los correctivos no se van a actualizar
     ]

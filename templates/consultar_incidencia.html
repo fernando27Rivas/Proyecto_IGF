@@ -44,7 +44,7 @@
                           <tr>
                            <td>{{incidencias.causa}}</td>
                            <td>{{incidencias.consecuencia}}</td>
-                           <td>{{incidencias.fecha_mantenimiento}}</td>
+                           <td>{{incidencias.fecha}}</td>
                                {% if incidencias.id_mantenimiento_id is not None %}
 
                                     {% if incidencias.id_mantenimiento.id_proveedor is not None%}
@@ -58,7 +58,7 @@
                                {% endif %}
 
                              <td>
-                             <a class="btn btn-primary" href="/actualizar_incidencia/{{incidencias.id_incidencia}}">
+                             <a class="btn btn-primary" href="/agregar_correctivo/{{incidencias.id_incidencia}}">
                                  <i class="material-icons">edit</i></a>
 
                              </td>
@@ -69,7 +69,6 @@
                      </table>
                 </div>
            </div>
-
       </body>
  </html>
 
@@ -109,3 +108,4 @@
       $('#employee_data').DataTable();
  });
  </script>
+
