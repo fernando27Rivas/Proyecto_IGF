@@ -8,9 +8,13 @@ from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.http import Http404
 from django.core.urlresolvers import reverse
 from datetime import datetime, date, time, timedelta
-
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth import authenticate, login, logout
 
 #Para Crear el Mantenimiento
+
+@login_required   #Se necesita Iniciar Sesion
+@permission_required('Proyecto_web.add_visita')
 def Agregar_preventivo(request,vehiculo_id):
     mensaje=""
     if request.method=='GET':
@@ -315,3 +319,25 @@ def Lista_vehiculos(request):
        except :
         raise Http404("Error en URL")
         return HttpResponseRedirect('/admin')
+
+
+def minsal_login(request):
+    mensaje = ""
+    if request.POST:
+
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return HttpResponseRedirect('/admin')
+
+        else:
+            mensaje = "Usuario o Contraseña Incorrecto"
+            return render(request, 'login.html', {'mensaje': mensaje, })
+    else:
+        return render(request, 'login.html', {'mensaje': mensaje, })
+
+def minsal_logout(request):
+    logout(request)
+    return HttpResponseRedirect('/login')

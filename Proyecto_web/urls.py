@@ -22,4 +22,8 @@ urlpatterns=[
 
     #URL Vehiculos
     url(r'^vehiculos/$', views.Lista_vehiculos, name='lista_vehiculos'),
+
+    url(r'^login/$', views.minsal_login, name='minsal_login'),
+    url(r'^logout/$', views.minsal_logout, name='minsal_logout'),
+
     ]
