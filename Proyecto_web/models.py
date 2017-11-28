@@ -10,10 +10,17 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.core.validators import MinValueValidator
 
+Vehiculo_CHOICES = (
+    ( 1, 'Disponible'),
+    ( 2, 'Asignado'),
+    ( 3 ,'Mantenimiento'),
+    ( 4 ,'Inactivo'),
+)
+
 class Incidencia(models.Model):
     id_incidencia = models.AutoField(primary_key=True)
     fecha = models.DateField('Fecha Incidencia',blank=False, null=False)
-    causa = models.CharField(max_length=75, blank=True, null=True)
+    causa = models.CharField(max_length=75, blank=False, null=True)
     consecuencia = models.CharField(max_length=100, blank=False, null=False)
     id_vehiculo = models.ForeignKey('Vehiculo', models.DO_NOTHING, db_column='id_vehiculo', blank=False, null=False)
     id_visita = models.ForeignKey('Visita', models.DO_NOTHING, db_column='id_visita', blank=False, null=False)
@@ -76,10 +83,11 @@ class UnidadOrganizacional(models.Model):
 class Vehiculo(models.Model):
     id_vehiculo = models.AutoField(primary_key=True)
     placa = models.CharField(max_length=10)
-    estado = models.SmallIntegerField()
+    estado = models.SmallIntegerField('Estado Vehiculo',choices=Vehiculo_CHOICES,default=1)
     proximo_mantenimiento = models.DateField(null=False,blank=False)
     color = models.CharField(max_length=20, blank=True, null=True)
     id_unidad = models.ForeignKey(UnidadOrganizacional, models.DO_NOTHING, db_column='id_unidad')
+
     def __str__(self):
         return self.placa
 
@@ -87,6 +95,17 @@ class Vehiculo(models.Model):
         managed = False
         db_table = 'vehiculo'
 
+
+class Usuario(models.Model):
+    id_usuari=models.AutoField(primary_key=True)
+    id_user = models.OneToOneField(User, null=True, db_column='id_user',)
+    id_unidad = models.ForeignKey(UnidadOrganizacional, models.DO_NOTHING, db_column='id_unidad')
+    def __str__(self):
+        return '{} {}'.format(self.id_user.get_username(), self.id_unidad.nombre)
+
+    class Meta:
+        managed = False
+        db_table = 'usuario'
 
 class Visita(models.Model):
     id_visita = models.AutoField(primary_key=True)
@@ -98,9 +117,10 @@ class Visita(models.Model):
     estado = models.SmallIntegerField()
     destino = models.CharField('Destino viaje', max_length=100,null=False,blank=False)
     id_conductor=models.ForeignKey("Conductor",db_column='id_conductor',null=True,blank=True)
+    user = models.OneToOneField(User, null=True,db_column='id_user', help_text='Usuario relacionado')
 
     def __str__(self):
-        return '{} {}'.format( self.id_vehiculo.placa,self.fecha_solicitud)
+        return '{} {}'.format( self.id_vehiculo,self.fecha_solicitud)
 
     class Meta:
         managed = False

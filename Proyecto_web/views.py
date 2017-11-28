@@ -7,7 +7,7 @@ from .forms import *
 from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.http import Http404
 from django.core.urlresolvers import reverse
-from django.contrib import messages
+from datetime import datetime, date, time, timedelta
 
 
 #Para Crear el Mantenimiento
@@ -90,10 +90,11 @@ def Agregar_incidencia(request,id_visita):
 
     if request.method == 'GET':
         incidencia_form = IncidenciaForm(prefix='incidencia')
+        vehiculo_form  =  VehiculoForm(prefix='vehiculo')
 
     if request.method == 'POST':
         incidencia_form = IncidenciaForm(request.POST or None, prefix='incidencia')
-
+        vehiculo_form = VehiculoForm(request.POST or None,prefix='vehiculo')
 
         if incidencia_form.is_valid():
 
@@ -102,6 +103,11 @@ def Agregar_incidencia(request,id_visita):
             tfecha = incidencia_form.cleaned_data['fecha']
             tcausa = incidencia_form.cleaned_data['causa']
             tconsecuencia = incidencia_form.cleaned_data['consecuencia']
+
+
+            if (vehiculo_form.is_valid()):
+              vehiculo.estado=int (vehiculo_form.cleaned_data['estado'])
+              vehiculo.save()
 
             incidencia = Incidencia.objects.create(
                 fecha=tfecha,
@@ -112,24 +118,26 @@ def Agregar_incidencia(request,id_visita):
                 id_mantenimiento=None
             )
 
-            messages.success(request, 'Your profile was updated.')  # ignored
             mensaje = "Registro la Incidencia de la visita " + str(visita.id_visita) + " con placas" + vehiculo.placa
-            #return HttpResponseRedirect('/agregar_correctivo/' + str(incidencia.id_incidencia),)
-            url = reverse('correctivo', kwargs={'incidencia_id': incidencia.id_incidencia})
-            return HttpResponseRedirect(url)
 
             # Vaciando Formulario
-            incidencia_form = IncidenciaForm(prefix='incidencia')  # Vaciando El formulario
 
+            incidencia_form = IncidenciaForm(prefix='incidencia')  # Vaciando El formulario
+            vehiculo_form = VehiculoForm(prefix='vehiculo')
+
+            ## Para redirigir a la siguiente vista
+            url = reverse('correctivo', kwargs={'incidencia_id': incidencia.id_incidencia})
+            HttpResponseRedirect(url)
         else:
             mensaje = "Formulario Vacio o Campos Incompletos"
 
     extra_context = {
         'incidencia_form': incidencia_form,
-        'mensaje': mensaje
+        'mensaje': mensaje,
+        'vehiculo_form':vehiculo_form
     }
 
-    return render(request, 'agregar_incidencia.html', extra_context)
+    return render(request, 'agregar_incidencia.html', extra_context,)
 
 #Consulta de Mantenimientos Preventivos solamente
 def Mantenimientos(request,id_vehiculo):
@@ -194,6 +202,7 @@ def Agregar_correctivo(request,incidencia_id):
             inci.id_mantenimiento=mante
             inci.save()
             # Limpiando campos despues de guardar
+
             mensaje="Mantenimiento Correctivo registrado a vehiculo placas  "+ vehi.placa
             mantenimiento_form=PreventivoForm(prefix='mantenimiento')
 
@@ -209,7 +218,7 @@ def Agregar_correctivo(request,incidencia_id):
 
 def SolicitarVisita(request):
     mensaje = ""
-    user = User.objects.get()
+    usuario = User.objects.get()
     if request.method == 'GET':
         visita_form = SolicitudForm(prefix='solicitud')
 
@@ -227,16 +236,17 @@ def SolicitarVisita(request):
                 fecha_fin=tfecha_fin,
                 destino=tdestino,
                 estado=1, # Solicitada
-                id_unidad=UnidadOrganizacional.objects.get(pk=1)
+                id_unidad=UnidadOrganizacional.objects.get(pk=1),
+                user=usuario
             )
 
 
             # Limpiando campos despues de guardar
-            mensaje = " Solicitud de visita del Usuario "+ user.get_username()
+            mensaje = " Solicitud de visita del Usuario "+ usuario.get_username()
             visita_form = SolicitudForm(prefix='solicitud')
         else:
 
-            mensaje="Error en Formato " + user.get_username()
+            mensaje="Error en Formato " + usuario.get_username()
 
     extra_context = {
         'visita_form': visita_form,
@@ -295,3 +305,13 @@ def Resolucion_solicitud(request,id_solicitud):
 
     }
     return render(request, 'resolucion_visita.html', extra_context)
+
+def Lista_vehiculos(request):
+    if request.user.has_perm('Proyecto_web.change_mantenimiento'):
+       try:
+        vehiculos_list = Vehiculo.objects.filter(id_unidad=2,proximo_mantenimiento__range=(date.today(),date.today()+timedelta(days=7)))#provisional
+        return render(request, 'vehiculos_list.html', {'vehiculos_list': vehiculos_list,})
+
+       except :
+        raise Http404("Error en URL")
+        return HttpResponseRedirect('/admin')

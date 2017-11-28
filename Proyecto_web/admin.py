@@ -15,6 +15,7 @@ admin.site.register(Mantenimiento)
 admin.site.register(Incidencia)
 admin.site.register(Licencia)
 admin.site.register(Conductor)
+admin.site.register(Usuario)
 
 
 # Register your models here.

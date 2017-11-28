@@ -50,9 +50,28 @@ class ResolucionForm(forms.ModelForm):
         self.fields['id_vehiculo'].widget = forms.Select(
             choices=[('', 'Escoja Vehiculo')]+list([(x.id_vehiculo, x.placa) for x in Vehiculo.objects.filter(estado=1)]))
 
+class VehiculoForm(forms.ModelForm):
+
+    class Meta:
+        model = Vehiculo
+        fields = ['estado',]
+        widgets = {
+
+            'estado': forms.Select()
+        }
+        layout = Layout(Fieldset(' :',
+                                 Row('estado', )))
+
+    def __init__(self, *args, **kwargs):
+            super(VehiculoForm, self).__init__(*args, **kwargs)
+            self.fields['estado'].widget = forms.Select(choices=[(1,'Disponible'),(4,'Inactivo')])
+
+
+
+
 
 class MantenimientoForm(forms.ModelForm):
-      class Meta:
+       class Meta:
         model=Mantenimiento
         fields = ('fecha_actual', 'descripcion','costo','proveedor')
         widgets = {
@@ -65,29 +84,9 @@ class MantenimientoForm(forms.ModelForm):
                         )
 
 
-      def __init__(self, *args, **kwargs):
+       def __init__(self, *args, **kwargs):
             super(MantenimientoForm, self).__init__(*args, **kwargs)
             self.fields['proveedor'].widget = forms.Select(choices=[('', 'Interno')]+list ([(x.id_proveedor, x.nombre) for x in Proveedor.objects.all()]))
-
-
-class Meta:
-    model = Mantenimiento
-    fields = ('fecha_actual', 'descripcion', 'costo', 'proveedor')
-    widgets = {
-
-        'proveedor': forms.Select()
-    }
-    layout = Layout(Fieldset('Informacion Mantenimiento:',
-                             Row('fecha_actual', ), Row('descripcion', ), Row('costo', ),
-                             Row('proveedor')
-                             )
-                    )
-
-
-def __init__(self, *args, **kwargs):
-    super(PreventivoForm, self).__init__(*args, **kwargs)
-    self.fields['proveedor'].widget = forms.Select(
-        choices=[('', 'Interno')] + list([(x.id_proveedor, x.nombre) for x in Proveedor.objects.all()]))
 
 class PreventivoForm(forms.ModelForm):
           class Meta:

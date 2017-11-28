@@ -39,15 +39,15 @@
                          </tfoot>
 
                          <tbody>
-                            {% for visitas in visitas_list %}
+                            {% for vehiculo in vehiculos_list %}
 
 
                           <tr>
-                           <td>{{visitas.destino}}</td>
-                           <td>{{visitas.fecha_solicitud}}</td>
-                           <td>{{visitas.fecha_inicio}}</td>
-                           <td> {{ visitas.fecha_fin}}</td>
-                              <td> {{ visitas.user.username}}</td>
+                           <td>{{vehiculo.placa}}</td>
+                           <td>{{vehiculo.estado}}</td>
+                           <td>{{vehiculo.proximo_mantenimiento}}</td>
+                           <td> {{ vehiculo.color}}</td>
+                              <td> {{ vehiculo.id_unidad.nombre}}</td>
 
                               <td>
                              <a class="btn btn-primary" href="/resolucion_solicitud/{{visitas.id_visita}}">

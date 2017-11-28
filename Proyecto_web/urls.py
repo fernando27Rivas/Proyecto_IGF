@@ -19,4 +19,7 @@ urlpatterns=[
     url(r'^solicitud_visita/$', views.SolicitarVisita, name='solicitud'),
     url(r'^lista_solicitudes/$', views.Lista_solicitud, name='lista_solicitudes'),
     url(r'^resolucion_solicitud/(?P<id_solicitud>[0-9]+)$', views.Resolucion_solicitud, name='resolucion_solicitu'),
+
+    #URL Vehiculos
+    url(r'^vehiculos/$', views.Lista_vehiculos, name='lista_vehiculos'),
     ]
