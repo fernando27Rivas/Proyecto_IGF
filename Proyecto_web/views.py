@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.contrib.auth.models import User, Permission
 from django.shortcuts import render
-from models import Incidencia,Mantenimiento,Vehiculo,Visita,UnidadOrganizacional
+from models import Incidencia,Mantenimiento,Vehiculo,Visita,UnidadOrganizacional,Usuario
 from .forms import *
 from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.http import Http404
@@ -14,7 +14,7 @@ from django.contrib.auth import authenticate, login, logout
 #Para Crear el Mantenimiento
 
 @login_required   #Se necesita Iniciar Sesion
-@permission_required('Proyecto_web.add_visita')
+@permission_required('Proyecto_web.add_visita') #Permisos para ejecutar la funcion  Si no tiene el permiso lo manda al login
 def Agregar_preventivo(request,vehiculo_id):
     mensaje=""
     if request.method=='GET':
@@ -63,8 +63,9 @@ def Agregar_preventivo(request,vehiculo_id):
      }
 
     return render(request, 'agregar_mantenimiento.html', extra_context)
-#PAra Actualizar MAntenimiento
 
+#PAra Actualizar MAntenimiento
+@login_required
 def Actualizar_Prevetivo(request,id_mantenimiento):
     mensaje = ""
     mantenimiento=Mantenimiento.objects.get(pk=id_mantenimiento)
@@ -84,6 +85,7 @@ def Actualizar_Prevetivo(request,id_mantenimiento):
     return render(request, 'agregar_mantenimiento.html', {'mantenimiento_form': mantenimiento_form,
                                  'mensaje': mensaje,'vehiculo_form':vehiculo_form })
 
+@login_required
 def Agregar_incidencia(request,id_visita):
     mensaje = ""
     mante = None
@@ -144,6 +146,7 @@ def Agregar_incidencia(request,id_visita):
     return render(request, 'agregar_incidencia.html', extra_context,)
 
 #Consulta de Mantenimientos Preventivos solamente
+@login_required
 def Mantenimientos(request,id_vehiculo):
     if request.user.has_perm('Proyecto_web.change_mantenimiento'):
        try:
@@ -156,6 +159,7 @@ def Mantenimientos(request,id_vehiculo):
         return HttpResponseRedirect('/admin')
 
 #Consulta las incidencias que no tiene asignado un mantenimiento Correctivo
+@login_required
 def consultarIncidencias(request,id_vehiculo):
 
     if request.user.has_perm('Proyecto_web.change_incidencia'):
@@ -172,6 +176,7 @@ def consultarIncidencias(request,id_vehiculo):
         return HttpResponseRedirect('/admin')
 
 #Vistas de Mantenimiento Correctivo
+@login_required
 def Agregar_correctivo(request,incidencia_id):
     mensaje=""
     if request.method=='GET':
@@ -220,9 +225,12 @@ def Agregar_correctivo(request,incidencia_id):
 
     return render(request, 'agregar_correctivo.html', extra_context)
 
+@login_required
 def SolicitarVisita(request):
     mensaje = ""
-    usuario = User.objects.get()
+    usuario =request.user
+    user=Usuario.objects.get(id_user=usuario)
+
     if request.method == 'GET':
         visita_form = SolicitudForm(prefix='solicitud')
 
@@ -240,7 +248,7 @@ def SolicitarVisita(request):
                 fecha_fin=tfecha_fin,
                 destino=tdestino,
                 estado=1, # Solicitada
-                id_unidad=UnidadOrganizacional.objects.get(pk=1),
+                id_unidad= user.id_unidad,
                 user=usuario
             )
 
@@ -259,28 +267,36 @@ def SolicitarVisita(request):
     }
     return render(request, 'solicitar_visita.html', extra_context)
 
+@login_required
 def Lista_solicitud(request):
-    if request.user.has_perm('Proyecto_web.change_mantenimiento'):
+    usuario = request.user
+    user = Usuario.objects.get(id_user=usuario)
+    unidad=user.id_unidad
+    if request.user.has_perm('Proyecto_web.add_visita'):
        try:
-        visitas_list = Visita.objects.filter(id_unidad=1,estado=1)
+        visitas_list = Visita.objects.filter(id_unidad=unidad.id_unidad_organizacional,estado=1)
         return render(request, 'lista_solicitudes.html', {'visitas_list': visitas_list,})
        except :
         raise Http404("Error en URL")
         return HttpResponseRedirect('/admin')
+    else:
+        raise Http404("Permisos Insuficientes")
 
+@login_required
 def Resolucion_solicitud(request,id_solicitud):
     mensaje = ""
-    user = User.objects.get()
+    user = request.user
     visita=Visita.objects.get(pk=id_solicitud)
-
+    usuario=Usuario.objects.get(id_user=user)
+    unidad=usuario.id_unidad
+    visita_list = Visita.objects.filter(id_unidad=unidad.id_unidad_organizacional, estado=2)
     if request.method == 'GET':
         resolucion_form = ResolucionForm(prefix='resolucion')
-
     # Cuando es POST
     if request.method == 'POST':
         resolucion_form = ResolucionForm(request.POST or None, prefix='resolucion')
-
-        if (request.POST.get('id_vehiculo')):
+        if (resolucion_form.is_valid()):
+         if(resolucion_form.cleaned_data['id_vehiculo']):
             tvehiculo = resolucion_form.cleaned_data['id_vehiculo']
             #Validamos SI se selecciono Conductor
             if (resolucion_form.cleaned_data['id_conductor']):
@@ -299,6 +315,9 @@ def Resolucion_solicitud(request,id_solicitud):
             # Limpiando campos despues de guardar
             mensaje = " Solicitud de visita del Usuario " + user.get_username()
             visita_form = SolicitudForm(prefix='solicitud')
+         else:
+
+             mensaje = "Error en Formato Espacio basio " + user.get_username()
         else:
 
             mensaje = "Error en Formato " + user.get_username()
@@ -306,10 +325,12 @@ def Resolucion_solicitud(request,id_solicitud):
     extra_context = {
         'resolucion_form': resolucion_form,
         'mensaje': mensaje,
-
+        'visita_list':visita_list,
+        'visita2':visita
     }
     return render(request, 'resolucion_visita.html', extra_context)
 
+@login_required
 def Lista_vehiculos(request):
     if request.user.has_perm('Proyecto_web.change_mantenimiento'):
        try:
@@ -337,7 +358,18 @@ def minsal_login(request):
             return render(request, 'login.html', {'mensaje': mensaje, })
     else:
         return render(request, 'login.html', {'mensaje': mensaje, })
-
+@login_required
 def minsal_logout(request):
     logout(request)
     return HttpResponseRedirect('/login')
+
+@login_required
+def Asignar_visita(request,id_visita,id_asignar):
+    visita=Visita.objects.get(pk=id_visita)
+    visita_asignar=Visita.objects.get(pk=id_asignar)
+    visita_asignar.id_vehiculo=visita.id_vehiculo
+    visita_asignar.id_conductor=visita.id_conductor
+    visita_asignar.estado=visita.estado
+    visita_asignar.save()
+    url = reverse('lista_solicitudes')
+    return HttpResponseRedirect(url)

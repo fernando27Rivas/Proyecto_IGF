@@ -1,4 +1,8 @@
 {% load static %}
+{% include 'material/includes/material_css.html' %}
+<script src="{% static 'material/js/jquery.js' %}"></script>
+{% include 'material/includes/material_js.html' %}
+{% load material_form %}
 
 <!DOCTYPE html>
 <html lang="es">
@@ -34,7 +38,7 @@
                                 <i class="material-icons right">forward</i>
                             </button>
                         </div>
-                        <div><a href="/reset-password/">¿Se le olvidó la contraseña?</a></div>
+
                     </form>
                     <script type="text/javascript">
                         (function () { Materialize.toast('{{ mensaje }}', 4000, 'rounded') })();
