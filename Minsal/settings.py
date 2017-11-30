@@ -90,11 +90,12 @@ WSGI_APPLICATION = 'Minsal.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'base_igf',
-        'USER': 'postgres',
-        'PASSWORD': 'admin',
+        'NAME': 'minsal',
+        'USER': 'igf_gpo6',
+        'PASSWORD': 'django',
         'HOST': 'localhost',
         'PORT': '5433',
+        #'PORT': '5432', #El otro puerto
     }
 }
 

@@ -68,7 +68,7 @@ class UnidadOrganizacional(models.Model):
     id_unidad_organizacional = models.AutoField(primary_key=True)
     unidad_padre = models.ForeignKey('self', models.DO_NOTHING, db_column='unidad_padre',null=True,blank=True)
     nombre = models.CharField(max_length=50)
-    departameno = models.CharField(max_length=30)
+    departamento = models.CharField(max_length=30)
     activa = models.NullBooleanField(null=False, blank=False,default=True)
     tiene_transporte = models.NullBooleanField(null=False, blank=False,default=False)
 
@@ -97,7 +97,7 @@ class Vehiculo(models.Model):
 
 
 class Usuario(models.Model):
-    id_usuari=models.AutoField(primary_key=True)
+    id_usuari=models.AutoField(primary_key=True,db_column='id')
     id_user = models.OneToOneField(User, null=True, db_column='id_user',)
     id_unidad = models.ForeignKey(UnidadOrganizacional, models.DO_NOTHING, db_column='id_unidad')
     def __str__(self):
