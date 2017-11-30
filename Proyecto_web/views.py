@@ -12,9 +12,12 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import authenticate, login, logout
 
 #Para Crear el Mantenimiento
+@login_required
+def base(request):
+    return render(request, 'base.html',)
 
 @login_required   #Se necesita Iniciar Sesion
-@permission_required('Proyecto_web.add_visita') #Permisos para ejecutar la funcion  Si no tiene el permiso lo manda al login
+#@permission_required('Proyecto_web.add_visita') #Permisos para ejecutar la funcion  Si no tiene el permiso lo manda al login
 def Agregar_preventivo(request,vehiculo_id):
     mensaje=""
     if request.method=='GET':
@@ -174,6 +177,9 @@ def consultarIncidencias(request,id_vehiculo):
        except :
         raise Http404("Error en URL")
         return HttpResponseRedirect('/admin')
+    else:
+        raise Http404("Permisos Insuficientes")
+        return HttpResponseRedirect('/admin')
 
 #Vistas de Mantenimiento Correctivo
 @login_required
@@ -331,16 +337,26 @@ def Resolucion_solicitud(request,id_solicitud):
     return render(request, 'resolucion_visita.html', extra_context)
 
 @login_required
-def Lista_vehiculos(request):
-    if request.user.has_perm('Proyecto_web.change_mantenimiento'):
-       try:
-        vehiculos_list = Vehiculo.objects.filter(id_unidad=2,proximo_mantenimiento__range=(date.today(),date.today()+timedelta(days=7)))#provisional
-        return render(request, 'vehiculos_list.html', {'vehiculos_list': vehiculos_list,})
+def proximo_mantenimiento(request):
+    if (request.user):
+      user=request.user
+      usuario = Usuario.objects.get(id_user=user)
+      unidad = usuario.id_unidad
+      if request.user.has_perm('Proyecto_web.change_mantenimiento'):
+        try:
+         vehiculos_list = Vehiculo.objects.filter(id_unidad=unidad.id_unidad_organizacional,proximo_mantenimiento__range=(date.today(),date.today()+timedelta(days=7)))#provisional
+         activo = True
+         return render(request, 'vehiculos_list.html', {'vehiculos_list': vehiculos_list,})
 
-       except :
-        raise Http404("Error en URL")
-        return HttpResponseRedirect('/admin')
-
+        except :
+         raise Http404("Error en URL")
+         return HttpResponseRedirect('/base')
+      else:
+        raise Http404("No posee permisos ")
+        return HttpResponseRedirect('/base')
+    else:
+        raise Http404("No posee un Usuario Asignado :V")
+        return HttpResponseRedirect('/base')
 
 def minsal_login(request):
     mensaje = ""
@@ -351,7 +367,7 @@ def minsal_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect('/admin')
+            return HttpResponseRedirect('/base')
 
         else:
             mensaje = "Usuario o Contraseña Incorrecto"
@@ -373,3 +389,25 @@ def Asignar_visita(request,id_visita,id_asignar):
     visita_asignar.save()
     url = reverse('lista_solicitudes')
     return HttpResponseRedirect(url)
+
+@login_required
+def lista_vehiculos(request):
+    if (request.user):
+      user=request.user
+      usuario = Usuario.objects.get(id_user=user)
+      unidad = usuario.id_unidad
+      if request.user.has_perm('Proyecto_web.change_mantenimiento'):
+        try:
+         vehiculos_list = Vehiculo.objects.filter(id_unidad=unidad.id_unidad_organizacional)
+         activo=False
+         return render(request, 'vehiculos_list.html', {'vehiculos_list': vehiculos_list,'activo':activo})
+
+        except :
+         raise Http404("Error en URL")
+         return HttpResponseRedirect('/base')
+      else:
+        raise Http404("No posee permisos ")
+        return HttpResponseRedirect('/base')
+    else:
+        raise Http404("No posee un Usuario Asignado :V")
+        return HttpResponseRedirect('/base')

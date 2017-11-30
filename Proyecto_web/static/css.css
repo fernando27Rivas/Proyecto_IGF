@@ -1,0 +1,179 @@
+header, main, footer {
+      padding-left: 300px;
+    }
+
+    @media only screen and (max-width : 992px) {
+      header, main, footer {
+        padding-left: 0;
+      }
+    }
+/*LOGIN*/
+#colorLogin{
+   background-image:  url("imagenes/log4.jpg"); 
+}
+
+#color{
+    background-image:  url("imagenes/log2.jpg"); 
+}
+
+#tamanio{
+    width: 700px;
+    
+}
+
+/*ASIDE*/
+#formato{
+    background-color:  #F8F8FF;
+    
+}
+
+
+/*NAV*/
+#moverNav{
+    position: absolute;
+    top:  0px;
+    background-color:  #DA70D6;
+    background-image:  url("imagenes/FondoMorado.jpg"); 
+}
+
+/*MAIN*/
+
+#movermain{
+    padding-right: 2em;
+    margin-right: 1em;
+    margin-top: 75px;
+}
+
+#imagenRen{
+    width: 550px;
+    height: 333px;
+}
+
+#estilo{
+    padding-top: 91px;
+}
+
+#moverTabla{
+    margin-top: 50px;
+}
+
+select{
+    display: inline-block;
+}
+
+#contenido{
+    border: 13px solid purple;
+    padding: 25px;
+    margin: 25px;
+}
+
+/* fallback */
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Material Icons'), local('MaterialIcons-Regular'), url(list/icons.woff2) format('woff2');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -moz-font-feature-settings: 'liga';
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.consulta-tabla label{
+    font-size: 14px;
+    color: black;
+}
+
+.consulta-tabla .pagination li a{
+    font-size: 14px;
+}
+
+.consulta-tabla tr{
+    height: 35px;
+}
+#movermain a.btn.btn-danger, #movermain input.btn.btn-danger {
+    background-color: #d9534f;
+}
+.dataTables_length label{
+    margin-top: 22px;
+}
+.consulta-tabla  .row{
+    margin-bottom: 0px;
+}
+
+.consulta-tabla .table > thead > tr > th, .consulta-tabla .table > tbody > tr > td{
+    vertical-align: middle;
+    text-align: center;
+}
+
+.select-search{
+    width: inherit;
+}
+
+.btn-view, .btn-view:hover{
+    background-color: #166a90;
+    color: white;
+}
+.btn-danger, .btn-danger:hover{
+    background-color: #b4180b;
+    color: white;
+}
+
+.iconos .glyphicon{
+    transition: all .2s ease-in-out;
+}
+
+.iconos:hover .glyphicon{
+    transform: scale(1.5);
+}
+#colorF{
+    background-image: url("imagenes/log4.jpg");
+}
+
+
+
+#lT{
+    font-size: 60px;
+    text-align: center;
+}
+
+.panel-success>.panel-heading {
+    color: #ffffff;
+    background-color: #337ab7;
+    border-color: #337ab7;
+}
+.panel-success {
+    border-color: #337ab7;
+}
+.panel-info>.panel-heading {
+    color: #ffffff;
+    background-color: #9412cc;
+    border-color: #9412cc;
+}
+
+.panel-info {
+    border-color: #9412cc;
+}
+
+.panel-warning>.panel-heading {
+    color: #ffffff;
+    background-color: #6a0db4;
+    border-color: #6a0db4;
+}
+
+.panel-warning {
+    border-color: #6a0db4;
+}
+

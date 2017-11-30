@@ -1,4 +1,6 @@
+{% extends 'base.html' %}
 {% load static %}
+
 {% include 'material/includes/material_css.html' %}
 <script src="{% static 'material/js/jquery.js' %}"></script>
 {% include 'material/includes/material_js.html' %}
@@ -25,7 +27,7 @@
 
 
     <script type="text/javascript">
-            $('input[name="mantenimiento-fecha_actual"]').datepicker({
+            $('input[name="solicitud-fecha_inicio"]').datepicker({
                 format: "dd/mm/yyyy",
                 todayBtn: "linked",
                 maxViewMode: 3,
