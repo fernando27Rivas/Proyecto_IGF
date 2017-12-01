@@ -44,23 +44,27 @@
                            <td>{{incidencias.causa}}</td>
                            <td>{{incidencias.consecuencia}}</td>
                            <td>{{incidencias.fecha}}</td>
+
                                {% if incidencias.id_mantenimiento_id is not None %}
 
-                                    {% if incidencias.id_mantenimiento.id_proveedor is not None%}
-                                          <td> {{ incidencias.id_mantenimiento.id_proveedor.nombre }}</td>
+                                    {% if incidencias.id_mantenimiento.proveedor is not None%}
+                                          <td> {{ incidencias.id_mantenimiento.proveedor.nombre }}</td>
+                                          <td> Ya posee</td>
                                     {% else %}
                                            <td> Mantenimiento Interno</td>
+                                         <td> Ya posee</td> 
 
                                     {% endif %}
                                {% else %}
                                 <td>Sin Mantenimiento</td>
-                               {% endif %}
-
-                             <td>
+                                    <td>
                              <a class="btn btn-primary" href="/agregar_correctivo/{{incidencias.id_incidencia}}">
                                  <i class="material-icons">edit</i></a>
 
                              </td>
+                               {% endif %}
+
+
                            </tr>
 
                             {% endfor %}

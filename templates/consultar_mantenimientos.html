@@ -59,8 +59,8 @@
 
                        <td>{{mantenimiento.descripcion}}</td>
                           <td>{{mantenimiento.fecha_actual}}</td>
-                           {% if mantenimiento.id_proveedor is not None %}
-                                <td>{{mantenimiento.id_proveedor.nombre}}</td>
+                           {% if mantenimiento.proveedor is not None %}
+                                <td>{{mantenimiento.proveedor.nombre}}</td>
                            {% else %}
                                <td>Proveedor Interno</td>
                            {% endif %}

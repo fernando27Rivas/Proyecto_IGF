@@ -69,23 +69,68 @@
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
+          <li><a href="/base">Inicio</a></li>
         <li class="dropdown"><a href="/solicitud_visita">Solicitud Visita</a></li>
-        <li class="dropdown">
+        {%if perms.Proyecto_web.change_visita %}
+          <li class="dropdown">
             <a  href="/lista_solicitudes">Solicitudes a Asignar </a>
         </li>
+
         <li><a href="/proximos_mantenimientos">Mantenimientos Proximos </a></li>
         <li><a href="/vehiculos">Vehiculos Unidad</a></li>
            <li><a href="/visitas_finalizadas"> Visitas Finalizadas</a></li>
+          {% endif %}
+       <li><a href="/mis_visitas"> Mis visitas</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
+        <li><a><span class="glyphicon glyphicon"></span> {{ user.get_username }}</a></li>
+          <li><a href="/logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
 
-        <li><a href="/logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
       </ul>
     </div>
   </div>
 </nav>
 {% block content %}
+<main id="movermain" >
+        <div class="row">
 
+            <div class="col s6" id="estilo">
+                <div class="card" >
+                    <div  class="card-image waves-effect waves-block waves-purple">
+
+                        <img class="activator"  src="{% static 'imagenes/minsal.jpg' %}">
+
+                    </div>
+                    <div class="card-content">
+                        <span class="card-title activator grey-text text-darken-4">Quienes Somos?<i class="material-icons right">more_vert</i></span>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s4 m6">
+                    <div class="card" >
+                        <div  class="card-image waves-effect waves-block waves-purple">
+
+                            <img class="activator"  src="{% static 'imagenes/instituciones.jpg' %}">
+
+
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title activator grey-text text-darken-4">Quienes la conforman<i class="material-icons right">more_vert</i></span>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+
+    </main>
 
 {% endblock %}
 

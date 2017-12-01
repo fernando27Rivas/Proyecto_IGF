@@ -28,6 +28,7 @@ urlpatterns=[
     # se Accede por el menu
     url(r'^lista_solicitudes/$', views.Lista_solicitud, name='lista_solicitudes'),
     url(r'^visitas_finalizadas/$', views.Visitas, name='visitas_finalizadas'),
+    url(r'^mis_visitas/$', views.Mis_visitas, name='mis_visitas'),
     # se Accede por lista de Solicitudes
     url(r'^resolucion_solicitud/(?P<id_solicitud>[0-9]+)$', views.Resolucion_solicitud, name='resolucion_solicitud'),
 

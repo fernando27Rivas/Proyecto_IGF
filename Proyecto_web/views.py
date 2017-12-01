@@ -185,8 +185,8 @@ def consultarIncidencias(request,id_vehiculo):
     if request.user.has_perm('Proyecto_web.change_incidencia'):
 
        try:
-        incidencias_list2 = Incidencia.objects.filter(id_vehiculo=id_vehiculo)
-        incidencias_list=incidencias_list2.filter(id_mantenimiento__isnull=True)
+        incidencias_list = Incidencia.objects.filter(id_vehiculo=id_vehiculo)
+        #incidencias_list=incidencias_list2.filter(id_mantenimiento__isnull=True)
         placa=Vehiculo.objects.get(pk=id_vehiculo)
         return render(request, 'consultar_incidencia.html',
                       {'incidencias_list': incidencias_list,'placa':placa, })
@@ -298,7 +298,7 @@ def Lista_solicitud(request):
     if request.user.has_perm('Proyecto_web.add_visita'):
        try:
         visitas_list = Visita.objects.filter(id_unidad=unidad.id_unidad_organizacional,estado=1)
-        activo=True
+        activo=1
         return render(request, 'lista_solicitudes.html', {'visitas_list': visitas_list,'activo':activo})
        except :
         raise Http404("Error en URL")
@@ -315,13 +315,27 @@ def Visitas(request):
     if request.user.has_perm('Proyecto_web.add_visita'):
        try:
         visitas_list = Visita.objects.filter(id_unidad=unidad.id_unidad_organizacional,estado=4)
-        activo=False
+        activo=2
         return render(request, 'lista_solicitudes.html', {'visitas_list': visitas_list,'activo':activo})
        except :
         raise Http404("Error en URL")
         return HttpResponseRedirect('/admin')
     else:
         raise Http404("Permisos Insuficientes")
+
+def Mis_visitas(request):
+    user = request.user
+
+    if request.user.has_perm('Proyecto_web.add_visita'):
+
+        visitas_list = Visita.objects.filter(estado=4)
+        activo=3
+        return render(request, 'lista_solicitudes.html', {'visitas_list': visitas_list,'activo':activo,})
+
+    else:
+        raise Http404("Permisos Insuficientes")
+
+
 
 @login_required
 def Resolucion_solicitud(request,id_solicitud):
