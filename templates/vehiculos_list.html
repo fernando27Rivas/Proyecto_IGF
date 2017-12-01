@@ -17,30 +17,29 @@
                            <tr>
                                <th>Placa </th>
                                <th>Estado  </th>
-                               <th>Proximo Mantenimiento</th>
+                               <th>Proximo Man</th>
                                <th> Color</th>
                                <th>Unidad</th>
-                               <th>Agregar Preventivo</th>
+                               <th> Añadir Preventivo</th>
                                {% if activo %}
-                               <th>Consultar Incidencias</th>
-                               <th>Consultar preventivo</th>
-
+                               <th> Incidencias</th>
+                               <th> Preventivos</th>
+                                <th> Correctivos</th>
                                {% endif %}
                            </tr>
                        </thead>
                        <tfoot>
                             <tr>
                               <th>Placa </th>
-
-                               <th>Estado  </th>
-                               <th>Proximo Mantenimiento</th>
+                               <th>Estado </th>
+                               <th>Proximo Man</th>
                                <th> Color</th>
                                <th>Unidad</th>
-                                <th>Agregar Preventivo</th>
+                                <th>Añadir Preventivo</th>
                                {% if activo %}
-                               <th>Consultar Incidencias</th>
-                               <th>Consultar preventivo</th>
-
+                               <th> Incidencias</th>
+                               <th> Preventivos</th>
+                                <th> Correctivos</th>
                                {% endif %}
 
 
@@ -81,6 +80,11 @@
                                     <a class="btn btn-primary" href="/lista_preventivos/{{vehiculo.id_vehiculo}}">
                                     <i class="material-icons">edit</i></a>
                                    </td>
+
+                                 <td>
+                                     <a class="btn btn-primary" href="/lista_correctivos/{{vehiculo.id_vehiculo}}">
+                                    <i class="material-icons">edit</i></a>
+                                    </td>
 
                                  {% else %}
 

@@ -9,7 +9,12 @@
       <body>
            <br /><br />
            <div class="container">
-                <h5 align="center">Consulta de Mantenimientos del vehiculo placas: {{ placa.placa }}</h5>
+                {% if activo %}
+                    <h5 align="center">Consulta de Preventivos del vehiculo placas: {{ placa.placa }}</h5>
+                    {% else %}
+                    <h5 align="center">Consulta de Correctivos del vehiculo placas: {{ placa.placa }}</h5>
+                {% endif %}
+
                 <br />
 
                 <div class="table-responsive">
@@ -21,8 +26,10 @@
                                <th>Fecha  </th>
                                <th>Proveedor</th>
                                <th>costo</th>
+                              {% if activo %}
                                <th>Gestionar Datos</th>
 
+                              {% endif %}
                            </tr>
                        </thead>
                        <tfoot>
@@ -32,7 +39,10 @@
                                 <th> Fecha </th>
                                 <th>Proveedor</th>
                                 <th>costo</th>
-                                <th>Gestionar Datos</th>
+                                {% if activo %}
+                               <th>Gestionar Datos</th>
+
+                              {% endif %}
                            </tr>
                          </tfoot>
 
@@ -60,10 +70,13 @@
                            {% else %}
                               <td> Fue Gratis</td>
                            {% endif %}
-                       <td>
+                        {% if activo %}
+                               <td>
                            <a class="btn btn-primary" href="/actualizar/{{mantenimiento.id_mantenimento}}">
                                  <i class="material-icons">edit</i></a>
                        </td>
+                              {% endif %}
+
 
                        </tr>
                   {% endfor %}

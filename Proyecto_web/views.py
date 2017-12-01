@@ -151,6 +151,19 @@ def Agregar_incidencia(request,id_visita):
 
     return render(request, 'agregar_incidencia.html', extra_context,)
 
+@login_required
+def Correctivos(request,id_vehiculo):
+    if request.user.has_perm('Proyecto_web.change_mantenimiento'):
+       try:
+        mantenimientos_list = Mantenimiento.objects.filter(id_vehiculo=id_vehiculo).filter(tipo=0)
+        placa=Vehiculo.objects.get(pk=id_vehiculo)
+        activo=False
+        return render(request, 'consultar_mantenimientos.html', {'mantenimientos_list': mantenimientos_list,'placa':placa,'activo':activo })
+
+       except :
+        raise Http404("Error en URL")
+        return HttpResponseRedirect('/admin')
+
 #Consulta de Mantenimientos Preventivos solamente
 @login_required
 def Mantenimientos(request,id_vehiculo):
@@ -158,7 +171,8 @@ def Mantenimientos(request,id_vehiculo):
        try:
         mantenimientos_list = Mantenimiento.objects.filter(id_vehiculo=id_vehiculo).filter(tipo=1)
         placa=Vehiculo.objects.get(pk=id_vehiculo)
-        return render(request, 'consultar_mantenimientos.html', {'mantenimientos_list': mantenimientos_list,'placa':placa })
+        activo=True
+        return render(request, 'consultar_mantenimientos.html', {'mantenimientos_list': mantenimientos_list,'placa':placa,'activo':activo})
 
        except :
         raise Http404("Error en URL")

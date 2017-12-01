@@ -21,7 +21,7 @@ urlpatterns=[
     # se accede por lista de incidencias
     url(r'^agregar_correctivo/(?P<incidencia_id>[0-9]+)$', views.Agregar_correctivo, name='correctivo'),
     ## Los correctivos no se van a actualizar
-
+    url(r'^lista_correctivos/(?P<id_vehiculo>[0-9]+)$', views.Correctivos, name='mantenimientos'),
     # URLS para la visita
     #Se accede por el menu
     url(r'^solicitud_visita/$', views.SolicitarVisita, name='solicitud'),
