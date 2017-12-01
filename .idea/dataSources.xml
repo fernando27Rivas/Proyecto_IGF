@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="Minsal@localhost" uuid="4a32446a-d73b-447d-9294-6ebebd1e6b74">
+    <data-source source="LOCAL" name="minsal@localhost" uuid="df424f3f-9b35-464c-9456-5321d53c4cd0">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://localhost:5433/Minsal</jdbc-url>
+      <jdbc-url>jdbc:postgresql://localhost:5433/minsal</jdbc-url>
       <driver-properties>
         <property name="ApplicationName" value="DataGrip" />
       </driver-properties>
