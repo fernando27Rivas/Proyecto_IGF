@@ -73,7 +73,7 @@ class VehiculoForm(forms.ModelForm):
 class MantenimientoForm(forms.ModelForm):
        class Meta:
         model=Mantenimiento
-        fields = ('fecha_actual', 'descripcion','costo','proveedor')
+        fields = ('fecha_actual', 'descripcion','proveedor','costo')
         widgets = {
 
             'id_proveedor': forms.Select()
@@ -91,7 +91,7 @@ class MantenimientoForm(forms.ModelForm):
 class PreventivoForm(forms.ModelForm):
           class Meta:
               model = Mantenimiento
-              fields = ('fecha_actual', 'descripcion', 'costo', 'proveedor')
+              fields = ('fecha_actual', 'descripcion', 'proveedor','costo' )
               widgets = {
 
                   'proveedor': forms.Select()

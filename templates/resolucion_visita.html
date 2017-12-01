@@ -1,4 +1,6 @@
+{% extends 'base.html' %}
 {% load static %}
+
 {% include 'material/includes/material_css.html' %}
 <script src="{% static 'material/js/jquery.js' %}"></script>
 {% include 'material/includes/material_js.html' %}
@@ -8,22 +10,26 @@
     <main id="movermain">
     <form action="" method="POST" class="viewform">
         {% csrf_token %}
-         <h5> Asignacion de Vehiculo: </h5>
-        {% form form=resolucion_form %}
-            {% part form.id_vehiculo prefix %} <i class="material-icons prefix">account_box</i>{% endpart %}
-            {% part form.id_conductor prefix %}<i class="material-icons prefix">account_box</i>{% endpart %}
-
-        {% endform %}
+        <h5> Asignacion de Vehiculo: </h5>
+          {% form form=resolucion_form %}
+              {% attr form.id_vehiculo 'widget' class append %}select-search <i class="material-icons prefix">assignment</i>{% endattr %}
+              {% attr form.id_conductor 'widget' class append %}select-search <i class="material-icons prefix">assignment</i>{% endattr %}
+          {% endform %}
 
         <button class="btn btn-primary"  type="submit" name="action" >Registrar
 					<i class="material-icons right">send</i>
          </button>
-
     </form>
-
-
-
-     <div class="container">
+    <script type="text/javascript">
+            $(function(){
+                // turn the element to select2 select style
+                $('.select-search').select2();
+            });
+        </script>
+    <script type="text/javascript">
+            (function () { Materialize.toast('{{ mensaje }}', 4000, 'rounded') })();
+    </script>
+ <div class="container">
                 <h5 align="center">Lista de Solicitudes</h5>
                 <br />
 
@@ -70,65 +76,5 @@
                      </table>
                 </div>
            </div>
-
-
-
-
-    <script type="text/javascript">
-            $('input[name="mantenimiento-fecha_actual"]').datepicker({
-                format: "dd/mm/yyyy",
-                todayBtn: "linked",
-                maxViewMode: 3,
-                autoclose: true,
-                language: "es",
-                daysOfWeekHighlighted: "0",
-                clearBtn: true,
-                todayHighlight: true
-            });
-       </script>
-
-
-    <script type="text/javascript">
-            (function () { Materialize.toast('{{ mensaje }}', 4000, 'rounded') })();
-    </script>
-    <script type="text/javascript">
- $(document).ready(function() {
-   $('#employee_data').DataTable( {
-     "language": {
-        "sProcessing":     "Procesando...",
-        "sLengthMenu":     "Mostrar _MENU_ registros",
-        "sZeroRecords":    "No se encontraron resultados",
-        "sEmptyTable":     "NingÃºn dato disponible en esta tabla",
-        "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-        "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
-        "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-        "sInfoPostFix":    "",
-        "sSearch":         "Buscar:",
-        "sUrl":            "",
-        "sInfoThousands":  ",",
-        "sLoadingRecords": "Cargando...",
-        "oPaginate": {
-            "sFirst":    "Primero",
-            "sLast":     "Ãšltimo",
-            "sNext":     "Siguiente",
-            "sPrevious": "Anterior"
-        },
-        "oAria": {
-            "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-        }
-  }
-  } );
- } );
- </script>
-
-
-
-           <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>-->
-           <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" /> -->
-         <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-          <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" />
-           <!-- <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script> -->
-
 </main>
 {% endblock %}

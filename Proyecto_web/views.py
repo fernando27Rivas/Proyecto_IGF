@@ -12,6 +12,9 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import authenticate, login, logout
 
 #Para Crear el Mantenimiento
+
+
+
 @login_required
 def base(request):
     return render(request, 'base.html',)
@@ -136,7 +139,7 @@ def Agregar_incidencia(request,id_visita):
 
             ## Para redirigir a la siguiente vista
             url = reverse('correctivo', kwargs={'incidencia_id': incidencia.id_incidencia})
-            HttpResponseRedirect(url)
+            return  HttpResponseRedirect(url)
         else:
             mensaje = "Formulario Vacio o Campos Incompletos"
 
@@ -281,7 +284,25 @@ def Lista_solicitud(request):
     if request.user.has_perm('Proyecto_web.add_visita'):
        try:
         visitas_list = Visita.objects.filter(id_unidad=unidad.id_unidad_organizacional,estado=1)
-        return render(request, 'lista_solicitudes.html', {'visitas_list': visitas_list,})
+        activo=True
+        return render(request, 'lista_solicitudes.html', {'visitas_list': visitas_list,'activo':activo})
+       except :
+        raise Http404("Error en URL")
+        return HttpResponseRedirect('/admin')
+    else:
+        raise Http404("Permisos Insuficientes")
+
+
+@login_required
+def Visitas(request):
+    usuario = request.user
+    user = Usuario.objects.get(id_user=usuario)
+    unidad=user.id_unidad
+    if request.user.has_perm('Proyecto_web.add_visita'):
+       try:
+        visitas_list = Visita.objects.filter(id_unidad=unidad.id_unidad_organizacional,estado=4)
+        activo=False
+        return render(request, 'lista_solicitudes.html', {'visitas_list': visitas_list,'activo':activo})
        except :
         raise Http404("Error en URL")
         return HttpResponseRedirect('/admin')
@@ -323,7 +344,7 @@ def Resolucion_solicitud(request,id_solicitud):
             visita_form = SolicitudForm(prefix='solicitud')
          else:
 
-             mensaje = "Error en Formato Espacio basio " + user.get_username()
+             mensaje = "Error en Formato Espacio vacio " + user.get_username()
         else:
 
             mensaje = "Error en Formato " + user.get_username()
@@ -345,7 +366,7 @@ def proximo_mantenimiento(request):
       if request.user.has_perm('Proyecto_web.change_mantenimiento'):
         try:
          vehiculos_list = Vehiculo.objects.filter(id_unidad=unidad.id_unidad_organizacional,proximo_mantenimiento__range=(date.today(),date.today()+timedelta(days=7)))#provisional
-         activo = True
+         activo = False
          return render(request, 'vehiculos_list.html', {'vehiculos_list': vehiculos_list,})
 
         except :
@@ -399,8 +420,9 @@ def lista_vehiculos(request):
       if request.user.has_perm('Proyecto_web.change_mantenimiento'):
         try:
          vehiculos_list = Vehiculo.objects.filter(id_unidad=unidad.id_unidad_organizacional)
-         activo=False
-         return render(request, 'vehiculos_list.html', {'vehiculos_list': vehiculos_list,'activo':activo})
+         activo=True
+         vehiculo=vehiculos_list.first()
+         return render(request, 'vehiculos_list.html', {'vehiculos_list': vehiculos_list,'activo':activo,'vehiculo':vehiculo})
 
         except :
          raise Http404("Error en URL")

@@ -1,17 +1,15 @@
-<!DOCTYPE html>
- <html>
-      <head>
-           <title>MPJ</title>
-           <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-           <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
-           <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-           <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" />
-           <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
-      </head>
+{% extends 'base.html' %}
+{% load static %}
+{% include 'material/includes/material_css.html' %}
+<script src="{% static 'material/js/jquery.js' %}"></script>
+{% include 'material/includes/material_js.html' %}
+{% load material_form %}
+
+{% block content %}
       <body>
            <br /><br />
            <div class="container">
-                <h3 align="center">Consulta de Mantenimientos del vehiculo placas: {{ placa.placa }}</h3>
+                <h5 align="center">Consulta de Mantenimientos del vehiculo placas: {{ placa.placa }}</h5>
                 <br />
 
                 <div class="table-responsive">
@@ -23,7 +21,7 @@
                                <th>Fecha  </th>
                                <th>Proveedor</th>
                                <th>costo</th>
-                               <th>Gestion</th>
+                               <th>Gestionar Datos</th>
 
                            </tr>
                        </thead>
@@ -34,7 +32,7 @@
                                 <th> Fecha </th>
                                 <th>Proveedor</th>
                                 <th>costo</th>
-                                <th>Gestion</th>
+                                <th>Gestionar Datos</th>
                            </tr>
                          </tfoot>
 
@@ -113,3 +111,4 @@
       $('#employee_data').DataTable();
  });
  </script>
+{% endblock %}

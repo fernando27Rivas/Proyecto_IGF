@@ -4,7 +4,11 @@
       <body>
            <br /><br />
            <div class="container">
-                <h3 align="center">Vehiculos</h3>
+               {% if activo %}
+               <h5 align="center">Vehiculos unidad  {{ vehiculo.id_unidad.nombre }}</h5>
+                   {% else%}
+                   <h5 align="center">Proximos Mantenimientos</h5>
+               {% endif %}
                 <br />
 
                 <div class="table-responsive">
@@ -16,10 +20,12 @@
                                <th>Proximo Mantenimiento</th>
                                <th> Color</th>
                                <th>Unidad</th>
+                               <th>Agregar Preventivo</th>
+                               {% if activo %}
+                               <th>Consultar Incidencias</th>
+                               <th>Consultar preventivo</th>
 
-                               <th>Gestionar</th>
-
-
+                               {% endif %}
                            </tr>
                        </thead>
                        <tfoot>
@@ -30,8 +36,12 @@
                                <th>Proximo Mantenimiento</th>
                                <th> Color</th>
                                <th>Unidad</th>
+                                <th>Agregar Preventivo</th>
+                               {% if activo %}
+                               <th>Consultar Incidencias</th>
+                               <th>Consultar preventivo</th>
 
-                               <th>Gestionar</th>
+                               {% endif %}
 
 
                            </tr>
@@ -57,14 +67,26 @@
                               <td> {{ vehiculo.id_unidad.nombre}}</td>
 
                              {% if activo %}
-                                <td>
-                             <a class="btn btn-primary" href="/incidencias/{{vehiculo.id_vehiculo}}">
-                                 <i class="material-icons">edit</i></a>
-                             </td>
-                                 {% else %}
+
                                  <td>
-                                  <a class="btn btn-primary" href="/lista_preventivos/{{vehiculo.id_vehiculo}}">
-                                   <i class="material-icons">edit</i></a>
+                                   <a class="btn btn-primary" href="/agregar_preventivo/{{vehiculo.id_vehiculo}}">
+                                    <i class="material-icons">edit</i></a>
+                                 </td>
+
+                                 <td>
+                                     <a class="btn btn-primary" href="/incidencias/{{vehiculo.id_vehiculo}}">
+                                     <i class="material-icons">edit</i></a>
+                                 </td>
+                                 <td>
+                                    <a class="btn btn-primary" href="/lista_preventivos/{{vehiculo.id_vehiculo}}">
+                                    <i class="material-icons">edit</i></a>
+                                   </td>
+
+                                 {% else %}
+
+                                 <td>
+                                     <a class="btn btn-primary" href="/agregar_preventivo/{{vehiculo.id_vehiculo}}">
+                                    <i class="material-icons">edit</i></a>
                                     </td>
 
                                {% endif %}

@@ -3,8 +3,11 @@
 
 
            <div class="container">
+                {% if activo %}
                 <h5 align="center">Solicitudes Por Asignar</h5>
-
+                    {% else %}
+                    <h5 align="center"> Visitas Terminadas</h5>
+                 {% endif %}
                 <div class="table-responsive">
                      <table id="employee_data" class="table table-striped table-bordered table-hover" data-toggle="bootgrid">
                        <thead>
@@ -14,7 +17,11 @@
                                <th>Fecha inicio</th>
                                <th>fecha Fin</th>
                                <th>Solicitante</th>
+                               {% if activo %}
                                <th>Asignar</th>
+                                   {% else %}
+                                <th>Agregar Incidencia</th>
+                               {% endif %}
 
                            </tr>
                        </thead>
@@ -25,7 +32,12 @@
                                <th>Fecha inicio</th>
                                <th>fecha Fin</th>
                                 <th>Solicitante</th>
+                               {% if activo %}
                                <th>Asignar</th>
+                                   {% else %}
+                                <th>Agregar Incidencia</th>
+                               {% endif %}
+
                            </tr>
                          </tfoot>
 
@@ -39,11 +51,18 @@
                            <td>{{visitas.fecha_inicio}}</td>
                            <td> {{ visitas.fecha_fin}}</td>
                               <td> {{ visitas.user.username}}</td>
-
+                             {% if activo %}
                               <td>
                              <a class="btn btn-primary" href="/resolucion_solicitud/{{visitas.id_visita}}">
                                  <i class="material-icons">description</i></a>
                              </td>
+
+                                 {% else %}
+                                 <td>
+                                  <a class="btn btn-primary" href="/agregar_incidencia/{{visitas.id_visita}}">
+                                  <i class="material-icons">description</i></a>
+                                </td>
+                          {% endif %}
                            </tr>
 
                             {% endfor %}

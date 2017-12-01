@@ -1,4 +1,4 @@
-
+{% extends 'base.html' %}
 {% load static %}
 {% include 'material/includes/material_css.html' %}
 <script src="{% static 'material/js/jquery.js' %}"></script>
@@ -17,7 +17,7 @@
         {% endform %}
 
         {%form form=vehiculo_form %}
-            {% part form.estado prefix %}<i class="material-icons prefix">call</i>{% endpart %}
+            {% attr form.estado 'widget' class append %}select-search <i class="material-icons prefix">assignment</i>{% endattr %}
         {% endform %}
 
         <button class="btn btn-primary"  type="submit" name="action" >Registrar
@@ -28,6 +28,12 @@
 
     </form>
 
+      <script type="text/javascript">
+            $(function(){
+                // turn the element to select2 select style
+                $('.select-search').select2();
+            });
+        </script>
 
     <script type="text/javascript">
             $('input[name="mantenimiento-fecha_actual"]').datepicker({
