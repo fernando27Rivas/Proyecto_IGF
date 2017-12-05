@@ -14,7 +14,7 @@
             {% part form.fecha_actual prefix %} <i class="material-icons prefix">date_range</i>{% endpart %}
             {% part form.costo prefix %}<i class="material-icons prefix">poll</i>{% endpart %}
             {% part form.descripcion prefix %} <i class="material-icons prefix"> description</i>{% endpart %}
-            {% attr form.proveedor 'widget' class append %}select-search <i class="material-icons prefix">assignment</i>{% endattr %}
+           {% part form.proveedor prefix %} <i class="material-icons prefix"> person_outline</i>{% endpart %}
 
         {% endform %}
 

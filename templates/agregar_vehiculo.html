@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+<script src="{% static 'material/js/jquery.js' %}"></script>
+{% include 'material/includes/material_js.html' %}
+{% load material_form %}
+{% include 'material/includes/material_css.html' %}
+{% block content %}
+    <main id="movermain">
+    <form action="" method="POST" class="viewform">
+        {% csrf_token %}
+         <h5> Datos de Vehiculo: </h5>
+        {% form form=vehiculos_form %}
+            {% part form.placa prefix %} <i class="material-icons prefix">attach_file</i>{% endpart %}
+            {% part form.estado prefix %}<i class="material-icons prefix">check</i>{% endpart %}
+            {% part form.proximo_mantenimiento prefix %}<i class="material-icons prefix">date_range</i>{% endpart %}
+            {% part form.color prefix %}<i class="material-icons prefix">format_paint</i>{% endpart %}
+        {% endform %}
+
+        <button class="btn btn-primary"  type="submit" name="action" >Registrar
+					<i class="material-icons right">send</i>
+         </button>
+    </form>
+       <script type="text/javascript">
+            $('input[name="add_vehiculo-placa"]').mask('P-###-###');
+        </script>
+
+    <script type="text/javascript">
+            (function () { Materialize.toast('{{ mensaje }}', 4000, 'rounded') })();
+    </script>
+
+</main>
+{% endblock %}

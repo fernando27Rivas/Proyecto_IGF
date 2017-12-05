@@ -27,8 +27,11 @@ urlpatterns=[
     url(r'^solicitud_visita/$', views.SolicitarVisita, name='solicitud'),
     # se Accede por el menu
     url(r'^lista_solicitudes/$', views.Lista_solicitud, name='lista_solicitudes'),
-    url(r'^visitas_finalizadas/$', views.Visitas, name='visitas_finalizadas'),
+    url(r'^visitas_finalizadas/$', views.Visitas_Unidad, name='visitas_finalizadas'),
     url(r'^mis_visitas/$', views.Mis_visitas, name='mis_visitas'),
+    url(r'^mis_aprobadas/$', views.Mis_aprobadas, name='mis_aprobadas'),
+
+
     # se Accede por lista de Solicitudes
     url(r'^resolucion_solicitud/(?P<id_solicitud>[0-9]+)$', views.Resolucion_solicitud, name='resolucion_solicitud'),
 
@@ -49,5 +52,10 @@ urlpatterns=[
     #URL Menu
     #hay que ponerle algo :O
     url(r'^base/$', views.base, name='base'),
+    url(r'^agregar_conductor/$', views.Agregar_conductor, name='conductor'),
+    url(r'^agregar_vehiculo/$', views.Agregar_vehiculo, name='add_vehiculo'),
+    url(r'^actualizar_conductor/(?P<id_conductor>[0-9]+)$', views.Actualizar_Conductor, name='change_conductor'),
+    url(r'^conductores/$', views.lista_conductores, name='coductores'),
 
+    url(r'^actualizar_estado/(?P<id_vehiculo>[0-9]+)$', views.actualizar_estado, name='estado'),
     ]

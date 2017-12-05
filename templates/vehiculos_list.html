@@ -17,10 +17,9 @@
                            <tr>
                                <th>Placa </th>
                                <th>Estado  </th>
-                               <th>Proximo Man</th>
-                               <th> Color</th>
-                               <th>Unidad</th>
+                               <th>Proximo Mantenimiento</th>
                                <th> Añadir Preventivo</th>
+                               <th>Estado</th>
                                {% if activo %}
                                <th> Incidencias</th>
                                <th> Preventivos</th>
@@ -32,10 +31,9 @@
                             <tr>
                               <th>Placa </th>
                                <th>Estado </th>
-                               <th>Proximo Man</th>
-                               <th> Color</th>
-                               <th>Unidad</th>
+                               <th>Proximo Mantenimiento</th>
                                 <th>Añadir Preventivo</th>
+                                <th> Actualizar Estado</th>
                                {% if activo %}
                                <th> Incidencias</th>
                                <th> Preventivos</th>
@@ -59,40 +57,46 @@
                               {% elif vehiculo.estado is 3 %}
                                <td>Inactivo</td>
                               {% else %}
-                              <td>En Mantenimiento</td>
+                              <td>Mantenimiento</td>
                            {% endif %}
                            <td>{{vehiculo.proximo_mantenimiento}}</td>
-                           <td> {{ vehiculo.color}}</td>
-                              <td> {{ vehiculo.id_unidad.nombre}}</td>
-
                              {% if activo %}
 
                                  <td>
                                    <a class="btn btn-primary" href="/agregar_preventivo/{{vehiculo.id_vehiculo}}">
-                                    <i class="material-icons">edit</i></a>
+                                    <i class="material-icons">build</i></a>
                                  </td>
 
                                  <td>
+                                     <a class="btn btn-primary" href="/actualizar_estado/{{vehiculo.id_vehiculo}}">
+                                    <i class="material-icons">autorenew</i></a>
+                                    </td>
+
+                                 <td>
                                      <a class="btn btn-primary" href="/incidencias/{{vehiculo.id_vehiculo}}">
-                                     <i class="material-icons">edit</i></a>
+                                     <i class="material-icons">warning</i></a>
                                  </td>
                                  <td>
                                     <a class="btn btn-primary" href="/lista_preventivos/{{vehiculo.id_vehiculo}}">
-                                    <i class="material-icons">edit</i></a>
+                                    <i class="material-icons">add_box</i></a>
                                    </td>
 
                                  <td>
                                      <a class="btn btn-primary" href="/lista_correctivos/{{vehiculo.id_vehiculo}}">
-                                    <i class="material-icons">edit</i></a>
+                                    <i class="material-icons">unarchive</i></a>
                                     </td>
 
                                  {% else %}
 
                                  <td>
                                      <a class="btn btn-primary" href="/agregar_preventivo/{{vehiculo.id_vehiculo}}">
-                                    <i class="material-icons">edit</i></a>
+                                    <i class="material-icons">build</i></a>
                                     </td>
 
+                                    <td>
+                                     <a class="btn btn-primary" href="/actualizar_estado/{{vehiculo.id_vehiculo}}">
+                                    <i class="material-icons">autorenew</i></a>
+                                    </td>
                                {% endif %}
 
 

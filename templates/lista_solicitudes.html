@@ -8,9 +8,11 @@
                       {% if activo is 1%}
                         <h5 align="center">Solicitudes Por Asignar</h5>
                       {% elif activo is 2%}
-                        <h5 align="center"> Visitas Terminadas</h5>
+                         <h5 align="center"> Visitas Terminadas</h5>
                       {% elif activo is 3%}
-                        <h5 align="center"> Mis Solicitudes</h5>
+                         <h5 align="center"> Mis Solicitudes</h5>
+                      {% elif activo is 4%}
+                          <h5 align="center"> Mis Aprobadas</h5>
                       {% endif %}
 
 
@@ -65,14 +67,14 @@
                                   <td> {{ visitas.user.username}}</td>
                               <td>
                              <a class="btn btn-primary" href="/resolucion_solicitud/{{visitas.id_visita}}">
-                                 <i class="material-icons">description</i></a>
+                                 <i class="material-icons">assignment_ind</i></a>
                              </td>
 
                                  {% elif activo is 2 %}
                                   <td> {{ visitas.user.username}}</td>
                                  <td>
                                   <a class="btn btn-primary" href="/agregar_incidencia/{{visitas.id_visita}}">
-                                  <i class="material-icons">description</i></a>
+                                  <i class="material-icons">assignment</i></a>
                                 </td>
                              {% endif %}
 

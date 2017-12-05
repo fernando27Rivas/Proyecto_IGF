@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% include 'material/includes/material_css.html' %}
 <script src="{% static 'material/js/jquery.js' %}"></script>
 {% include 'material/includes/material_js.html' %}
@@ -12,8 +11,8 @@
         {% csrf_token %}
         <h5> Asignacion de Vehiculo: </h5>
           {% form form=resolucion_form %}
-              {% attr form.id_vehiculo 'widget' class append %}select-search <i class="material-icons prefix">assignment</i>{% endattr %}
-              {% attr form.id_conductor 'widget' class append %}select-search <i class="material-icons prefix">assignment</i>{% endattr %}
+              {% part form.id_vehiculo prefix %} <i class="material-icons prefix"> directions_car</i>{% endpart %}
+              {% part form.id_conductor prefix %} <i class="material-icons prefix"> perm_identity</i>{% endpart %}
           {% endform %}
 
         <button class="btn btn-primary"  type="submit" name="action" >Registrar
@@ -66,7 +65,7 @@
                            <td>{{visita.fecha_fin}}</td>
                            <td>
                            <a class="btn btn-primary" href="/agrupar_visita/{{visita.id_visita}}/{{ visita2.id_visita }}">
-                                 <i class="material-icons">edit</i></a>
+                                 <i class="material-icons">assignment_turned_in</i></a>
                        </td>
 
                            </tr>

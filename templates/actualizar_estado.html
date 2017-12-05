@@ -9,21 +9,19 @@
     <main id="movermain">
     <form action="" method="POST" class="viewform">
         {% csrf_token %}
-         <h5> Datos de Incidencia: </h5>
-        {% form form=incidencia_form %}
-            {% part form.fecha prefix %} <i class="material-icons prefix">date_range</i>{% endpart %}
-            {% part form.causa prefix %}<i class="material-icons prefix">book</i>{% endpart %}
-           {% part form.consecuencia prefix %}<i class="material-icons prefix">book</i>{% endpart %}
-        {% endform %}
+        <h5> Estado  Vehiculo </h5>
 
         {%form form=vehiculo_form %}
-           {% part form.estado prefix %}<i class="material-icons prefix">check</i>{% endpart %}
+           {% part form.estado prefix %}<i class="material-icons prefix">account_box</i>{% endpart %}
         {% endform %}
 
         <button class="btn btn-primary"  type="submit" name="action" >Registrar
 					<i class="material-icons right">send</i>
          </button>
 
+
+
+    </form>
 
     <script type="text/javascript">
             (function () { Materialize.toast('{{ mensaje }}', 4000, 'rounded') })();

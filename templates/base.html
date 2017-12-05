@@ -1,5 +1,4 @@
 {% load static %}
-
 {% include 'material/includes/material_css.html' %}
 <script src="{% static 'material/js/jquery.js' %}"></script>
 {% include 'material/includes/material_js.html' %}
@@ -18,7 +17,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/multi-select.css' %}">
 
     <script defer type="text/javascript" src="{% static 'list/frontend.js' %}"></script>
-    <script src="{% static 'list/jquery-2.1.1.js' %}"></script>
+
     <script type="text/javascript" src="{% static 'js/materialize.min.js' %}"></script>
     <link type="text/css" rel="stylesheet" href="{% static 'materialize.min.css' %}"  />
     <link type="text/css" rel="stylesheet" href="{% static 'materialize.css' %}"  />
@@ -26,10 +25,7 @@
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/bootstrap-table.js' %}"></script>
 
-    <!-- Select2 -->
-    <link rel="stylesheet" href={% static 'select2/select2.css'%}>
-    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src={% static 'select2/select2.js' %}></script>
+
 
 
 
@@ -46,10 +42,7 @@
     <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" />
     <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
-    <!-- Js Personales -->
-    <script src="{% static 'js/tabla.js' %}"></script>
-    <script src="{% static 'js/expediente.js' %}"></script>
-    <script  src={% static 'js/jquery.quicksearch.js' %}></script>
+
 
 </head>
 
@@ -70,17 +63,37 @@
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
           <li><a href="/base">Inicio</a></li>
-        <li class="dropdown"><a href="/solicitud_visita">Solicitud Visita</a></li>
+
+
+       <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown">  Gestion de Solicitudes<span class="caret"></span></a>
+       <ul class="dropdown-menu">
+            <li><a href="/solicitud_visita">Solicitar Visita</a></li>
+            <li><a  href="/lista_solicitudes">Solicitudes a Asignar </a></li>
+
+       </ul>
+
         {%if perms.Proyecto_web.change_visita %}
-          <li class="dropdown">
-            <a  href="/lista_solicitudes">Solicitudes a Asignar </a>
-        </li>
+            <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown">  Gestion Recursos<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+            <li><a href="/agregar_vehiculo"> Agregar Unidades</a></li>
+            <li><a href="/agregar_conductor">Agregar Conductores</a></li>
+            <li><a href="/vehiculos">Vehiculos Unidad</a></li>
+            <li><a href="/conductores"> Conductores Unidad</a></li>
+
+        </ul>
+
+
+            <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"> Gestion de Visitas <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+             <li><a href="/visitas_finalizadas"> Visitas Finalizadas</a></li>
+             <li><a href="/mis_visitas"> Mis visitas</a></li>
+             <li><a  href="/mis_aprobadas">Solicitudes Aprobadas </a></li>
+        </ul>
 
         <li><a href="/proximos_mantenimientos">Mantenimientos Proximos </a></li>
-        <li><a href="/vehiculos">Vehiculos Unidad</a></li>
-           <li><a href="/visitas_finalizadas"> Visitas Finalizadas</a></li>
+
           {% endif %}
-       <li><a href="/mis_visitas"> Mis visitas</a></li>
+
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a><span class="glyphicon glyphicon"></span> {{ user.get_username }}</a></li>

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% load material_form %}
+
+{% block content %}
+    <main id="movermain">
+    <form action="" method="POST" class="viewform">
+        {% csrf_token %}
+         <h5> Datos de Conductor: </h5>
+        {% form form=conductor_form %}
+
+
+            {% part form.fecha_nacimiento prefix %} <i class="material-icons prefix">date_range</i>{% endpart %}
+            {% part form.nombre prefix %}<i class="material-icons prefix">account_box</i>{% endpart %}
+            {% part form.apellido prefix %}<i class="material-icons prefix">account_box</i>{% endpart %}
+            {% part form.numero_telefono prefix %}<i class="material-icons prefix">call</i>{% endpart %}
+            {% part form.licencia prefix %}<i class="material-icons prefix">reorder</i>{% endpart %}
+
+
+
+
+        {% endform %}
+
+        <button class="btn btn-primary"  type="submit" name="action" >Registrar
+					<i class="material-icons right">send</i>
+         </button>
+
+
+    </form>
+
+      <script type="text/javascript">
+            $('input[name="conductor-numero_telefono"]').mask('0000-0000');
+
+
+        </script>
+
+      <script type="text/javascript">
+            $(function(){
+                $('.select').select2();
+            });
+        </script>
+
+    <script type="text/javascript">
+            (function () { Materialize.toast('{{ mensaje }}', 4000, 'rounded') })();
+    </script>
+
+</main>
+{% endblock %}

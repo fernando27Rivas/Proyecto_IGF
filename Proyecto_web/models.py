@@ -10,6 +10,14 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.core.validators import MinValueValidator
 
+#No se Implemento esto del estado de la visita
+Visita_CHOICES = (
+    ( 1, 'Solicitada'),
+    ( 2, 'Aprobada'),
+    ( 3 ,'En proceso'),#Se esta llevando a cabo en el momento
+    ( 4 ,'Finalizada'),
+)
+
 Vehiculo_CHOICES = (
     ( 1, 'Disponible'),
     ( 2, 'Asignado'),
@@ -17,51 +25,28 @@ Vehiculo_CHOICES = (
     ( 4 ,'Inactivo'),
 )
 
-class Incidencia(models.Model):
-    id_incidencia = models.AutoField(primary_key=True)
-    fecha = models.DateField('Fecha Incidencia',blank=False, null=False)
-    causa = models.CharField(max_length=75, blank=False, null=True)
-    consecuencia = models.CharField(max_length=100, blank=False, null=False)
-    id_vehiculo = models.ForeignKey('Vehiculo', models.DO_NOTHING, db_column='id_vehiculo', blank=False, null=False)
-    id_visita = models.ForeignKey('Visita', models.DO_NOTHING, db_column='id_visita', blank=False, null=False)
-    id_mantenimiento=models.ForeignKey('Mantenimiento', models.DO_NOTHING, db_column='id_mantenimiento', blank=True, null=True)
-
-    def __str__(self):
-        return '{} {}'.format( self.id_vehiculo.placa,self.fecha)
-
-    class Meta:
-        managed = False
-        db_table = 'incidencia'
-
-
-class Mantenimiento(models.Model):
-    id_mantenimento = models.AutoField(primary_key=True)
-    tipo = models.BooleanField('Tipo',blank=False,null=False)
-    descripcion = models.CharField(max_length=100)
-    costo = models.FloatField(blank=False, null=False, validators = [MinValueValidator(0)])
-    fecha_actual = models.DateField('Fecha Mantenimiento')
-    proveedor = models.ForeignKey('Proveedor', models.DO_NOTHING, db_column='id_proveedor', blank=True, null=True)
-    id_vehiculo = models.ForeignKey('Vehiculo', models.DO_NOTHING, db_column='id_vehiculo', blank=False, null=False)
-
-    def __str__(self):
-        return '{} {}'.format( self.fecha_actual,self.id_vehiculo.placa)
-
-    class Meta:
-        managed = False
-        db_table = 'mantenimiento'
-
-
-class Proveedor(models.Model):
-    id_proveedor = models.AutoField('Proveedor',primary_key=True)
-    nombre = models.CharField(max_length=50,blank=False,null=False)
+Choices=(
+    ('Liviana','Liviana'),
+    ('Particular','Particular'),
+    ('Pesada','Pesada'),
+    ('Pesada-T','Pesada-T'),
+)
+class Vehiculo(models.Model):
+    id_vehiculo = models.AutoField(primary_key=True)
+    placa = models.CharField(max_length=10,blank=False,null=False)
+    estado = models.SmallIntegerField('Estado Vehiculo',choices=Vehiculo_CHOICES,default=1)
+    proximo_mantenimiento = models.DateField(null=False,blank=False)
+    color = models.CharField(max_length=10, blank=True, null=True)
     id_unidad = models.ForeignKey('UnidadOrganizacional', models.DO_NOTHING, db_column='id_unidad', blank=False, null=False)
+    vehiculo = models.Manager()
 
     def __str__(self):
-        return self.nombre
+        return self.placa
 
     class Meta:
         managed = False
-        db_table = 'proveedor'
+        db_table = 'vehiculo'
+        ordering = ["id_vehiculo"]
 
 
 class UnidadOrganizacional(models.Model):
@@ -80,32 +65,64 @@ class UnidadOrganizacional(models.Model):
         db_table = 'unidad_organizacional'
 
 
-class Vehiculo(models.Model):
-    id_vehiculo = models.AutoField(primary_key=True)
-    placa = models.CharField(max_length=10)
-    estado = models.SmallIntegerField('Estado Vehiculo',choices=Vehiculo_CHOICES,default=1)
-    proximo_mantenimiento = models.DateField(null=False,blank=False)
-    color = models.CharField(max_length=20, blank=True, null=True)
-    id_unidad = models.ForeignKey(UnidadOrganizacional, models.DO_NOTHING, db_column='id_unidad')
+class Proveedor(models.Model):
+    id_proveedor = models.AutoField('Proveedor',primary_key=True)
+    nombre = models.CharField(max_length=50,blank=False,null=False)
+    id_unidad = models.ForeignKey('UnidadOrganizacional', models.DO_NOTHING, db_column='id_unidad', blank=False, null=False)
 
     def __str__(self):
-        return self.placa
+        return self.nombre
 
     class Meta:
         managed = False
-        db_table = 'vehiculo'
+        db_table = 'proveedor'
+
+class Mantenimiento(models.Model):
+    id_mantenimento = models.AutoField(primary_key=True)
+    tipo = models.BooleanField('Tipo',blank=False,null=False)
+    descripcion = models.CharField(max_length=100)
+    costo = models.FloatField(blank=False, null=False, validators = [MinValueValidator(0)])
+    fecha_actual = models.DateField('Fecha Mantenimiento')
+    proveedor = models.ForeignKey('Proveedor', models.DO_NOTHING, db_column='id_proveedor', blank=True, null=True)
+    id_vehiculo = models.ForeignKey('Vehiculo', models.DO_NOTHING, db_column='id_vehiculo', blank=False, null=False)
+
+    def __str__(self):
+        return '{} {}'.format( self.fecha_actual,self.id_vehiculo.placa)
+
+    class Meta:
+        managed = False
+        db_table = 'mantenimiento'
+
 
 
 class Usuario(models.Model):
     id_usuari=models.AutoField(primary_key=True,db_column='id')
     id_user = models.OneToOneField(User, null=True, db_column='id_user',)
-    id_unidad = models.ForeignKey(UnidadOrganizacional, models.DO_NOTHING, db_column='id_unidad')
+    id_unidad = models.ForeignKey('UnidadOrganizacional', models.DO_NOTHING, db_column='id_unidad')
     def __str__(self):
         return '{} {}'.format(self.id_user.get_username(), self.id_unidad.nombre)
 
     class Meta:
         managed = False
         db_table = 'usuario'
+
+
+class Conductor(models.Model):
+    id_conductor = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=25, null=False, blank=False)
+    apellido = models.CharField(max_length=25, null=False, blank=False)
+    fecha_nacimiento = models.DateField(blank=False,null=False)
+    numero_telefono=models.CharField( max_length=9, help_text='Formato: XXXX-XXXX')
+    id_unidad = models.ForeignKey('UnidadOrganizacional', models.DO_NOTHING, db_column='id_unidad')
+    licencia=models.CharField( max_length=10,choices=Choices )
+
+    def __str__(self):
+        return self.nombre
+
+    class Meta:
+       managed = False
+       db_table = 'conductor'
+
 
 class Visita(models.Model):
     id_visita = models.AutoField(primary_key=True)
@@ -126,31 +143,18 @@ class Visita(models.Model):
         managed = False
         db_table = 'visita'
 
-class Licencia(models.Model):
-    id_licencia = models.AutoField(primary_key=True)
-    numero = models.CharField( max_length=15, null=False, blank=False)
-    tipo = models.CharField(max_length=20, null=False, blank=False)
-    fecha_vencimiento= models.DateField()
+class Incidencia(models.Model):
+    id_incidencia = models.AutoField(primary_key=True)
+    fecha = models.DateField('Fecha Incidencia',blank=False, null=False)
+    causa = models.CharField(max_length=75, blank=False, null=True)
+    consecuencia = models.CharField(max_length=100, blank=False, null=False)
+    id_vehiculo = models.ForeignKey('Vehiculo', models.DO_NOTHING, db_column='id_vehiculo', blank=False, null=False)
+    id_visita = models.ForeignKey('Visita', models.DO_NOTHING, db_column='id_visita', blank=False, null=False)
+    id_mantenimiento=models.ForeignKey('Mantenimiento', models.DO_NOTHING, db_column='id_mantenimiento', blank=True, null=True)
 
     def __str__(self):
-        return self.numero
+        return '{} {}'.format( self.id_vehiculo.placa,self.fecha)
 
     class Meta:
         managed = False
-        db_table = 'licencia'
-
-class Conductor(models.Model):
-    id_conductor = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=25, null=False, blank=False)
-    apellido = models.CharField(max_length=25, null=False, blank=False)
-    edad = models.IntegerField()
-    numero_telefono=models.IntegerField()
-    id_unidad = models.ForeignKey(UnidadOrganizacional, models.DO_NOTHING, db_column='id_unidad')
-    id_licencia = models.ForeignKey(Licencia, models.DO_NOTHING, db_column='id_licencia')
-
-    def __str__(self):
-        return self.nombre
-
-    class Meta:
-       managed = False
-       db_table = 'conductor'
+        db_table = 'incidencia'

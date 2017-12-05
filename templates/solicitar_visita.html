@@ -12,44 +12,15 @@
         {% csrf_token %}
          <h5> Datos de Solicitud: </h5>
         {% form form=visita_form %}
-            {% part form.fecha_inicio prefix %} <i class="material-icons prefix">account_box</i>{% endpart %}
-            {% part form.destino prefix %}<i class="material-icons prefix">account_box</i>{% endpart %}
-            {% part form.fecha_fin prefix %}<i class="material-icons prefix">account_box</i>{% endpart %}
+            {% part form.fecha_inicio prefix %} <i class="material-icons prefix">date_range</i>{% endpart %}
+            {% part form.destino prefix %}<i class="material-icons prefix">rv_hookup</i>{% endpart %}
+            {% part form.fecha_fin prefix %}<i class="material-icons prefix">date_range</i>{% endpart %}
         {% endform %}
 
         <button class="btn btn-primary"  type="submit" name="action" >Registrar
 					<i class="material-icons right">send</i>
          </button>
     </form>
-
-
-    <script type="text/javascript">
-            $('input[name="solicitud-fecha_inicio"]').datepicker({
-                format: "dd/mm/yyyy",
-                todayBtn: "linked",
-                maxViewMode: 3,
-                autoclose: true,
-                language: "es",
-                daysOfWeekHighlighted: "0",
-                clearBtn: true,
-                todayHighlight: true
-            });
-       </script>
-
-    <script type="text/javascript">
-               $('input[name="solicitud-fecha_fin"]').datetimepicker({
-                format: "dd-mm-yyyy hh:ii:ss ",
-                todayBtn: "linked",
-                maxViewMode: 3,
-                autoclose: true,
-                language: "es",
-                daysOfWeekHighlighted: "0",
-                clearBtn: true,
-                todayHighlight: true
-            });
-
-        </script>
-
 
 
     <script type="text/javascript">

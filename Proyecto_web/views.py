@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.contrib.auth.models import User, Permission
 from django.shortcuts import render
-from models import Incidencia,Mantenimiento,Vehiculo,Visita,UnidadOrganizacional,Usuario
+from models import Incidencia,Mantenimiento,Vehiculo,Visita,UnidadOrganizacional,Usuario,Conductor
 from .forms import *
 from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.http import Http404
@@ -34,7 +34,7 @@ def Agregar_preventivo(request,vehiculo_id):
 
 
 
-            vehi=Vehiculo.objects.get(pk=vehiculo_id)
+            vehi=Vehiculo.vehiculo.get(pk=vehiculo_id)
             tproveedor = mantenimiento_form.cleaned_data['proveedor']
             tfecha=mantenimiento_form.cleaned_data['fecha_actual']
             tdescripcion= mantenimiento_form.cleaned_data['descripcion']
@@ -110,7 +110,7 @@ def Agregar_incidencia(request,id_visita):
 
         if incidencia_form.is_valid():
 
-            vehiculo = Vehiculo.objects.get(pk=visita.id_vehiculo.id_vehiculo)
+            vehiculo = Vehiculo.vehiculo.get(pk=visita.id_vehiculo.id_vehiculo)
 
             tfecha = incidencia_form.cleaned_data['fecha']
             tcausa = incidencia_form.cleaned_data['causa']
@@ -156,7 +156,7 @@ def Correctivos(request,id_vehiculo):
     if request.user.has_perm('Proyecto_web.change_mantenimiento'):
        try:
         mantenimientos_list = Mantenimiento.objects.filter(id_vehiculo=id_vehiculo).filter(tipo=0)
-        placa=Vehiculo.objects.get(pk=id_vehiculo)
+        placa=Vehiculo.vehiculo.get(pk=id_vehiculo)
         activo=False
         return render(request, 'consultar_mantenimientos.html', {'mantenimientos_list': mantenimientos_list,'placa':placa,'activo':activo })
 
@@ -170,7 +170,7 @@ def Mantenimientos(request,id_vehiculo):
     if request.user.has_perm('Proyecto_web.change_mantenimiento'):
        try:
         mantenimientos_list = Mantenimiento.objects.filter(id_vehiculo=id_vehiculo).filter(tipo=1)
-        placa=Vehiculo.objects.get(pk=id_vehiculo)
+        placa=Vehiculo.vehiculo.get(pk=id_vehiculo)
         activo=True
         return render(request, 'consultar_mantenimientos.html', {'mantenimientos_list': mantenimientos_list,'placa':placa,'activo':activo})
 
@@ -187,7 +187,7 @@ def consultarIncidencias(request,id_vehiculo):
        try:
         incidencias_list = Incidencia.objects.filter(id_vehiculo=id_vehiculo)
         #incidencias_list=incidencias_list2.filter(id_mantenimiento__isnull=True)
-        placa=Vehiculo.objects.get(pk=id_vehiculo)
+        placa=Vehiculo.vehiculo.get(pk=id_vehiculo)
         return render(request, 'consultar_incidencia.html',
                       {'incidencias_list': incidencias_list,'placa':placa, })
 
@@ -212,7 +212,7 @@ def Agregar_correctivo(request,incidencia_id):
 
         if mantenimiento_form.is_valid():
             inci=Incidencia.objects.get(pk=incidencia_id)
-            vehi=Vehiculo.objects.get(pk=inci.id_vehiculo.id_vehiculo)
+            vehi=Vehiculo.vehiculo.get(pk=inci.id_vehiculo.id_vehiculo)
 
             tproveedor = mantenimiento_form.cleaned_data['proveedor']
             tfecha=mantenimiento_form.cleaned_data['fecha_actual']
@@ -237,6 +237,8 @@ def Agregar_correctivo(request,incidencia_id):
 
             mensaje="Mantenimiento Correctivo registrado a vehiculo placas  "+ vehi.placa
             mantenimiento_form=PreventivoForm(prefix='mantenimiento')
+            url = reverse('vehiculos')
+            return HttpResponseRedirect(url)
 
 
 
@@ -266,12 +268,17 @@ def SolicitarVisita(request):
             tdestino = visita_form.cleaned_data['destino']
             tfecha_fin=visita_form.cleaned_data['fecha_fin']
 
+            if(user.id_unidad.unidad_padre is None):
+                unidad=user.id_unidad
+            else:
+                unidad=user.id_unidad.unidad_padre
+
             visita = Visita.objects.create(
                 fecha_inicio=tfecha_inicio,
                 fecha_fin=tfecha_fin,
                 destino=tdestino,
                 estado=1, # Solicitada
-                id_unidad= user.id_unidad,
+                id_unidad= unidad,
                 user=usuario
             )
 
@@ -308,34 +315,42 @@ def Lista_solicitud(request):
 
 
 @login_required
-def Visitas(request):
+def Visitas_Unidad(request):
     usuario = request.user
     user = Usuario.objects.get(id_user=usuario)
     unidad=user.id_unidad
     if request.user.has_perm('Proyecto_web.add_visita'):
        try:
+           #visitas Finalizadas Unidad
         visitas_list = Visita.objects.filter(id_unidad=unidad.id_unidad_organizacional,estado=4)
         activo=2
         return render(request, 'lista_solicitudes.html', {'visitas_list': visitas_list,'activo':activo})
        except :
-        raise Http404("Error en URL")
+        raise Http404("Error en Recuperar Datos")
         return HttpResponseRedirect('/admin')
     else:
         raise Http404("Permisos Insuficientes")
 
+
+
+@login_required
 def Mis_visitas(request):
     user = request.user
-
+    usuario=Usuario.objects.get(id_user=user.id)
     if request.user.has_perm('Proyecto_web.add_visita'):
-
-        visitas_list = Visita.objects.filter(estado=4)
+      try:
+        if (usuario.id_unidad.unidad_padre is None):
+            unidad = usuario.id_unidad
+        else:
+            unidad = usuario.id_unidad.unidad_padre
+        #Mis visitas Finalizas
+        visitas_list = Visita.objects.filter(estado=4,id_unidad=unidad.id_unidad_organizacional,user=user.id)
         activo=3
         return render(request, 'lista_solicitudes.html', {'visitas_list': visitas_list,'activo':activo,})
-
+      except:
+         raise Http404("No se recuperaron los datos ")
     else:
         raise Http404("Permisos Insuficientes")
-
-
 
 @login_required
 def Resolucion_solicitud(request,id_solicitud):
@@ -369,10 +384,10 @@ def Resolucion_solicitud(request,id_solicitud):
 
             # Limpiando campos despues de guardar
             mensaje = " Solicitud de visita del Usuario " + user.get_username()
-            visita_form = SolicitudForm(prefix='solicitud')
+            resolucion_form = ResolucionForm(prefix='resolucion')
          else:
 
-             mensaje = "Error en Formato Espacio vacio " + user.get_username()
+             mensaje = "Error en Vehiculo " + user.get_username()
         else:
 
             mensaje = "Error en Formato " + user.get_username()
@@ -393,11 +408,11 @@ def proximo_mantenimiento(request):
       unidad = usuario.id_unidad
       if request.user.has_perm('Proyecto_web.change_mantenimiento'):
         try:
-         vehiculos_list = Vehiculo.objects.filter(id_unidad=unidad.id_unidad_organizacional,proximo_mantenimiento__range=(date.today(),date.today()+timedelta(days=7)))#provisional
+         vehiculos_list = Vehiculo.vehiculo.filter(id_unidad=unidad.id_unidad_organizacional,proximo_mantenimiento__range=(date.today(),date.today()+timedelta(days=7)))#provisional
          activo = False
-         return render(request, 'vehiculos_list.html', {'vehiculos_list': vehiculos_list,})
-
-        except :
+         return render(request, 'vehiculos_list.html',
+                       {'vehiculos_list': vehiculos_list, 'activo': activo,})
+        except:
          raise Http404("Error en URL")
          return HttpResponseRedirect('/base')
       else:
@@ -447,7 +462,7 @@ def lista_vehiculos(request):
       unidad = usuario.id_unidad
       if request.user.has_perm('Proyecto_web.change_mantenimiento'):
         try:
-         vehiculos_list = Vehiculo.objects.filter(id_unidad=unidad.id_unidad_organizacional)
+         vehiculos_list = Vehiculo.vehiculo.filter(id_unidad=unidad.id_unidad_organizacional).order_by('id_vehiculo')
          activo=True
          vehiculo=vehiculos_list.first()
          return render(request, 'vehiculos_list.html', {'vehiculos_list': vehiculos_list,'activo':activo,'vehiculo':vehiculo})
@@ -461,3 +476,166 @@ def lista_vehiculos(request):
     else:
         raise Http404("No posee un Usuario Asignado :V")
         return HttpResponseRedirect('/base')
+
+
+@login_required
+def Agregar_vehiculo(request):
+    mensaje = ""
+    user = request.user
+    usuario=Usuario.objects.get(id_user=user)
+    unidad=usuario.id_unidad
+    if request.method == 'GET':
+        vehiculos_form = Add_VehiculosForm(prefix='add_vehiculo')
+          # Cuando es POST
+    if request.method == 'POST':
+        vehiculos_form = Add_VehiculosForm(request.POST or None, prefix='add_vehiculo')
+        if (vehiculos_form.is_valid()):
+
+           if(vehiculos_form.cleaned_data['estado']):
+              testado = vehiculos_form.cleaned_data['estado']
+
+           tplaca = vehiculos_form.cleaned_data['placa']
+           tproximo = vehiculos_form.cleaned_data['proximo_mantenimiento']
+           tcolor = vehiculos_form.cleaned_data['color']
+             # Limpiando campos despues de guardar
+           vehiculo = Vehiculo.vehiculo.create(
+                estado=testado,
+                placa=tplaca,
+               proximo_mantenimiento=tproximo,
+               color=tcolor,
+               id_unidad=unidad
+                  )
+           mensaje = " Se Registro el vehiculo con exito "
+           vehiculos_form = Add_VehiculosForm(prefix='add_vehiculo')
+        else:
+          mensaje = "Error  Formulario " + user.get_username()
+
+    extra_context = {
+        'vehiculos_form': vehiculos_form,
+        'mensaje': mensaje,
+        }
+    return render(request, 'agregar_vehiculo.html', extra_context)
+
+@login_required
+def Agregar_conductor(request):
+    mensaje = ""
+    user = request.user
+    usuario=Usuario.objects.get(id_user=user)
+    unidad=usuario.id_unidad
+
+    if request.method == 'GET':
+        conductor_form = ConductorForm(prefix='conductor')
+          # Cuando es POST
+    if request.method == 'POST':
+        conductor_form = ConductorForm(request.POST or None, prefix='conductor')
+        if (conductor_form.is_valid()):
+
+           if(conductor_form.cleaned_data['licencia']):
+              tlicencia = conductor_form.cleaned_data['licencia']
+
+           tnombre = conductor_form.cleaned_data['nombre']
+           tapellido = conductor_form.cleaned_data['apellido']
+           tnumero = conductor_form.cleaned_data['numero_telefono']
+           tfecha = conductor_form.cleaned_data['fecha_nacimiento']
+
+             # Limpiando campos despues de guardar
+
+
+           conductor = Conductor.objects.create(
+                licencia=tlicencia,
+                nombre=tnombre,
+                apellido=tapellido,
+                numero_telefono=tnumero,
+                fecha_nacimiento=tfecha,
+               id_unidad=unidad
+                  )
+           mensaje = " Se Registro el Conductor Con exito "
+           conductor_form = ConductorForm(prefix='conductor')
+        else:
+          mensaje = "Error  Formulario " + user.get_username()
+
+    extra_context = {
+        'conductor_form': conductor_form,
+        'mensaje': mensaje,
+
+        }
+    return render(request, 'agregar_conductor.html', extra_context)
+
+@login_required
+def Actualizar_Conductor(request,id_conductor):
+    mensaje = ""
+    conductor=Conductor.objects.get(pk=id_conductor)
+    conductor_form = ConductorForm(data=request.POST or None, instance=conductor,prefix='conductor')
+
+    if request.method == 'POST':
+
+       if conductor_form.is_valid():
+           conductor_form.save()
+           mensaje="Actualizacion exitosa"
+           url = reverse('coductores')
+           return HttpResponseRedirect(url)
+
+       else:
+           mensaje="Error Campos Obligatorios"
+
+    return render(request, 'agregar_conductor.html', {'conductor_form': conductor_form,
+                                 'mensaje': mensaje, })
+
+
+@login_required
+def lista_conductores(request):
+    if (request.user):
+      user=request.user
+      usuario = Usuario.objects.get(id_user=user)
+      unidad = usuario.id_unidad
+      if request.user.has_perm('Proyecto_web.change_mantenimiento'):
+        try:
+         conductor_list = Conductor.objects.filter(id_unidad=unidad.id_unidad_organizacional).order_by('id_conductor')
+         return render(request, 'lista_conductores.html', {'conductor_list': conductor_list,'unidad':unidad})
+
+        except :
+         raise Http404("Error al recuperar Datos")
+
+      else:
+        raise Http404("No posee permisos ")
+
+    else:
+        raise Http404("No posee un Usuario Asignado")
+
+@login_required
+def actualizar_estado(request,id_vehiculo):
+    mensaje = ""
+    vehiculo=Vehiculo.vehiculo.get(pk=id_vehiculo)
+
+    vehiculo_form = EstadoForm(data=request.POST or None, instance=vehiculo,prefix='estado')
+    if request.method == 'POST':
+
+       if vehiculo_form.is_valid():
+
+            vehiculo_form.save()
+            mensaje="Actualizacion exitosa"
+            url = reverse('vehiculos')
+            return HttpResponseRedirect(url)
+       else:
+           mensaje="Error Campos Obligatorios"
+
+    return render(request, 'actualizar_estado.html', {'mensaje': mensaje,'vehiculo_form':vehiculo_form })
+
+def Mis_aprobadas(request):
+    user = request.user
+    usuario=Usuario.objects.get(id_user=user.id)
+
+    if request.user.has_perm('Proyecto_web.add_visita'):
+      try:
+        if (usuario.id_unidad.unidad_padre is None):
+            unidad = usuario.id_unidad
+        else:
+            unidad = usuario.id_unidad.unidad_padre
+        #Mis visitas Aprobadas
+        visitas_list = Visita.objects.filter(estado=2,id_unidad=unidad.id_unidad_organizacional,user=user.id)
+        activo=4
+        return render(request, 'lista_solicitudes.html', {'visitas_list': visitas_list,'activo':activo,})
+      except:
+         raise Http404("No se recuperaron los datos ")
+    else:
+        raise Http404("Permisos Insuficientes")
