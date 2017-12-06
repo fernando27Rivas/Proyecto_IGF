@@ -21,8 +21,9 @@ def base(request):
 
 @login_required   #Se necesita Iniciar Sesion
 #@permission_required('Proyecto_web.add_visita') #Permisos para ejecutar la funcion  Si no tiene el permiso lo manda al login
-def Agregar_preventivo(request,vehiculo_id):
+def Agregar_preventivo(request,vehiculo_id,activo):
     mensaje=""
+    activo=int(activo)
     if request.method=='GET':
         mantenimiento_form=PreventivoForm(prefix='mantenimiento')
         vehiculo_form=ProximoForm(prefix='proximo')
@@ -55,6 +56,15 @@ def Agregar_preventivo(request,vehiculo_id):
                 proveedor=tproveedor,
                 )
             #Limpiando campos despues de guardar
+            if (activo is 1):
+                url = reverse('vehiculos')
+                return HttpResponseRedirect(url)
+            elif (activo is 3):
+                url = reverse('lista_preventivos',kwargs={vehi.id_vehiculo})
+                return HttpResponseRedirect(url)
+            elif (activo is 4):
+                url = reverse('proximos')
+                return HttpResponseRedirect(url)
 
             mensaje="Mantenimiento registrado a "+ vehi.placa
             mantenimiento_form=PreventivoForm(prefix='mantenimiento')
@@ -65,19 +75,21 @@ def Agregar_preventivo(request,vehiculo_id):
     'mantenimiento_form':mantenimiento_form,
     'vehiculo_form':vehiculo_form,
     'mensaje': mensaje,
-    'vehiculo_id':vehiculo_id
+    'vehiculo_id':vehiculo_id,
+    'activo':activo
      }
 
     return render(request, 'agregar_mantenimiento.html', extra_context)
 
 #PAra Actualizar MAntenimiento
 @login_required
-def Actualizar_Prevetivo(request,id_mantenimiento):
+def Actualizar_Prevetivo(request,id_mantenimiento,activo):
     mensaje = ""
     mantenimiento=Mantenimiento.objects.get(pk=id_mantenimiento)
     vehiculo=mantenimiento.id_vehiculo
     mantenimiento_form = PreventivoForm(data=request.POST or None, instance=mantenimiento)
     vehiculo_form = ProximoForm(data=request.POST or None, instance=vehiculo)
+    activo=int(activo)
     if request.method == 'POST':
 
        if mantenimiento_form.is_valid() & vehiculo_form.is_valid():
@@ -85,16 +97,23 @@ def Actualizar_Prevetivo(request,id_mantenimiento):
             mantenimiento_form.save()
             vehiculo_form.save()
             mensaje="Actualizacion exitosa"
+            if (activo is 3):
+
+                url = reverse('lista_preventivos', kwargs={'id_vehiculo':vehiculo.id_vehiculo })
+                return HttpResponseRedirect(url)
        else:
            mensaje="Error Campos Obligatorios"
 
-    return render(request, 'agregar_mantenimiento.html', {'mantenimiento_form': mantenimiento_form,
-                                 'mensaje': mensaje,'vehiculo_form':vehiculo_form })
+    context={'mantenimiento_form': mantenimiento_form,
+    'mensaje': mensaje,'vehiculo_form':vehiculo_form,'activo':activo,'vehiculo':vehiculo.id_vehiculo }
+
+    return render(request, 'agregar_mantenimiento.html',context )
 
 @login_required
 def Agregar_incidencia(request,id_visita):
     mensaje = ""
     mante = None
+    activo=1
     try:
         visita = Visita.objects.get(pk=id_visita)
     except Visita.DoesNotExist:
@@ -136,9 +155,9 @@ def Agregar_incidencia(request,id_visita):
 
             incidencia_form = IncidenciaForm(prefix='incidencia')  # Vaciando El formulario
             vehiculo_form = VehiculoForm(prefix='vehiculo')
-
+            incidencia_id=incidencia.id_incidencia
             ## Para redirigir a la siguiente vista
-            url = reverse('correctivo', kwargs={'incidencia_id': incidencia.id_incidencia})
+            url = reverse('correctivo',kwargs={'incidencia_id':incidencia_id,'activo':activo})
             return  HttpResponseRedirect(url)
         else:
             mensaje = "Formulario Vacio o Campos Incompletos"
@@ -146,7 +165,8 @@ def Agregar_incidencia(request,id_visita):
     extra_context = {
         'incidencia_form': incidencia_form,
         'mensaje': mensaje,
-        'vehiculo_form':vehiculo_form
+        'vehiculo_form':vehiculo_form,
+        'activo':activo
     }
 
     return render(request, 'agregar_incidencia.html', extra_context,)
@@ -200,8 +220,13 @@ def consultarIncidencias(request,id_vehiculo):
 
 #Vistas de Mantenimiento Correctivo
 @login_required
-def Agregar_correctivo(request,incidencia_id):
+def Agregar_correctivo(request,incidencia_id,activo):
     mensaje=""
+    activo=int(activo)
+    inci = Incidencia.objects.get(pk=incidencia_id)
+    vehi = Vehiculo.vehiculo.get(pk=inci.id_vehiculo.id_vehiculo)
+    vehiculo=vehi
+
     if request.method=='GET':
         mantenimiento_form=PreventivoForm(prefix='mantenimiento')
 
@@ -211,8 +236,7 @@ def Agregar_correctivo(request,incidencia_id):
 
 
         if mantenimiento_form.is_valid():
-            inci=Incidencia.objects.get(pk=incidencia_id)
-            vehi=Vehiculo.vehiculo.get(pk=inci.id_vehiculo.id_vehiculo)
+
 
             tproveedor = mantenimiento_form.cleaned_data['proveedor']
             tfecha=mantenimiento_form.cleaned_data['fecha_actual']
@@ -234,17 +258,23 @@ def Agregar_correctivo(request,incidencia_id):
             inci.id_mantenimiento=mante
             inci.save()
             # Limpiando campos despues de guardar
-
-            mensaje="Mantenimiento Correctivo registrado a vehiculo placas  "+ vehi.placa
-            mantenimiento_form=PreventivoForm(prefix='mantenimiento')
-            url = reverse('vehiculos')
-            return HttpResponseRedirect(url)
+            mensaje = "Mantenimiento Correctivo registrado a vehiculo placas  " + vehi.placa
+            mantenimiento_form = PreventivoForm(prefix='mantenimiento')
+            if (activo is 1):
+             url = reverse('visitas_finalizadas')
+             return HttpResponseRedirect(url)
+            else:
+                url = reverse('consultarincidencias',kwargs={'id_vehiculo':vehi.id_vehiculo})
+                return HttpResponseRedirect(url)
 
 
 
     extra_context = {
     'mantenimiento_form':mantenimiento_form,
     'mensaje': mensaje,
+    'vehiculo':vehiculo,
+    'incidencia_id':incidencia_id,
+    'activo':activo
 
      }
 
@@ -517,11 +547,12 @@ def Agregar_vehiculo(request):
     return render(request, 'agregar_vehiculo.html', extra_context)
 
 @login_required
-def Agregar_conductor(request):
+def Agregar_conductor(request,activo):
     mensaje = ""
     user = request.user
     usuario=Usuario.objects.get(id_user=user)
     unidad=usuario.id_unidad
+    activo=int(activo)
 
     if request.method == 'GET':
         conductor_form = ConductorForm(prefix='conductor')
@@ -557,16 +588,17 @@ def Agregar_conductor(request):
     extra_context = {
         'conductor_form': conductor_form,
         'mensaje': mensaje,
+        'activo':activo
 
         }
     return render(request, 'agregar_conductor.html', extra_context)
 
 @login_required
-def Actualizar_Conductor(request,id_conductor):
+def Actualizar_Conductor(request,id_conductor,activo):
     mensaje = ""
     conductor=Conductor.objects.get(pk=id_conductor)
     conductor_form = ConductorForm(data=request.POST or None, instance=conductor,prefix='conductor')
-
+    activo=int(activo)
     if request.method == 'POST':
 
        if conductor_form.is_valid():
@@ -579,7 +611,7 @@ def Actualizar_Conductor(request,id_conductor):
            mensaje="Error Campos Obligatorios"
 
     return render(request, 'agregar_conductor.html', {'conductor_form': conductor_form,
-                                 'mensaje': mensaje, })
+                                 'mensaje': mensaje,'activo':activo })
 
 
 @login_required
@@ -603,8 +635,9 @@ def lista_conductores(request):
         raise Http404("No posee un Usuario Asignado")
 
 @login_required
-def actualizar_estado(request,id_vehiculo):
+def actualizar_estado(request,id_vehiculo,activo):
     mensaje = ""
+    activo=int(activo)
     vehiculo=Vehiculo.vehiculo.get(pk=id_vehiculo)
 
     vehiculo_form = EstadoForm(data=request.POST or None, instance=vehiculo,prefix='estado')
@@ -614,12 +647,16 @@ def actualizar_estado(request,id_vehiculo):
 
             vehiculo_form.save()
             mensaje="Actualizacion exitosa"
-            url = reverse('vehiculos')
-            return HttpResponseRedirect(url)
+            if (activo is 2):
+                url = reverse('proximos')
+                return HttpResponseRedirect(url)
+            if (activo is 1):
+             url = reverse('vehiculos')
+             return HttpResponseRedirect(url)
        else:
            mensaje="Error Campos Obligatorios"
 
-    return render(request, 'actualizar_estado.html', {'mensaje': mensaje,'vehiculo_form':vehiculo_form })
+    return render(request, 'actualizar_estado.html', {'mensaje': mensaje,'vehiculo_form':vehiculo_form,'activo':activo})
 
 def Mis_aprobadas(request):
     user = request.user

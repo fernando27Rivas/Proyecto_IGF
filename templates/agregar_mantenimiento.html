@@ -22,33 +22,33 @@
             {% part form.proximo_mantenimiento prefix %} <i class="material-icons prefix">date_range</i>{% endpart %}
         {% endform %}
 
-        <button class="btn btn-primary"  type="submit" name="action" >Registrar
+
+             {% if activo is 1 %}
+                  <button class="btn btn-primary"  type="submit" name="action" >Registrar
 					<i class="material-icons right">send</i>
-         </button>
+                 </button>
+                <a class="btn btn-danger" href="/vehiculos/" type="submit">Cancelar
+                <i class="material-icons right">warning</i></a>
+             {% elif activo is 3 %}
+               <button class="btn btn-view"  type="submit" name="action" >Actualizar
+               <i class="material-icons right">send</i>
+               </button>
+                <a class="btn btn-danger" href="/lista_preventivos/{{ vehiculo }}" type="submit">Cancelar
+                <i class="material-icons right">warning</i></a>
+             {% elif activo is 4 %}
+               <button class="btn btn-primary"  type="submit" name="action" >Registrar
+               <i class="material-icons right">send</i>
+               </button>
+                <a class="btn btn-danger" href="/proximos_mantenimientos/" type="submit">Cancelar
+                <i class="material-icons right">warning</i></a>
+              {% endif %}
 
     </form>
-    <script type="text/javascript">
-            $('input[name="mantenimiento-fecha"]').datepicker({
-                format: "dd/mm/yyyy",
-                todayBtn: "linked",
-                maxViewMode: 3,
-                autoclose: true,
-                language: "es",
-                daysOfWeekHighlighted: "0",
-                clearBtn: true,
-                todayHighlight: true
-            });
-       </script>
+
        <script type="text/javascript">
             (function () { Materialize.toast('{{ mensaje }}', 4000, 'rounded') })();
        </script>
 
-    <script type="text/javascript">
-            $(function(){
-                // turn the element to select2 select style
-                $('.select-search').select2();
-            });
-        </script>
 
 
 </main>

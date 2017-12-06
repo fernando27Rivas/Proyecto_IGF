@@ -1,23 +1,7 @@
-header, main, footer {
-      padding-left: 300px;
-    }
 
-    @media only screen and (max-width : 992px) {
-      header, main, footer {
-        padding-left: 0;
-      }
-    }
-/*LOGIN*/
-#colorLogin{
-   background-image:  url("imagenes/log4.jpg"); 
-}
-
-#color{
-    background-image:  url("imagenes/log2.jpg"); 
-}
 
 #tamanio{
-    width: 700px;
+    width: 800px;
     
 }
 
@@ -25,15 +9,6 @@ header, main, footer {
 #formato{
     background-color:  #F8F8FF;
     
-}
-
-
-/*NAV*/
-#moverNav{
-    position: absolute;
-    top:  0px;
-    background-color:  #DA70D6;
-    background-image:  url("imagenes/FondoMorado.jpg"); 
 }
 
 /*MAIN*/
@@ -57,9 +32,7 @@ header, main, footer {
     margin-top: 50px;
 }
 
-select{
-    display: inline-block;
-}
+
 
 #contenido{
     border: 13px solid purple;
@@ -118,9 +91,6 @@ select{
     text-align: center;
 }
 
-.select-search{
-    width: inherit;
-}
 
 .btn-view, .btn-view:hover{
     background-color: #166a90;
@@ -138,9 +108,7 @@ select{
 .iconos:hover .glyphicon{
     transform: scale(1.5);
 }
-#colorF{
-    background-image: url("imagenes/log4.jpg");
-}
+
 
 
 

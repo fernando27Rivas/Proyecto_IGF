@@ -21,9 +21,17 @@
 
         {% endform %}
 
-        <button class="btn btn-primary"  type="submit" name="action" >Registrar
+             {% if activo is 1 %}
+                  <button class="btn btn-primary"  type="submit" name="action" >Registrar
 					<i class="material-icons right">send</i>
-         </button>
+                 </button>
+             {% elif activo is 2 %}
+               <button class="btn btn-view"  type="submit" name="action" >Actualizar
+               <i class="material-icons right">send</i>
+               </button>
+                <a class="btn btn-danger" href="/conductores/" type="submit">Cancelar
+                <i class="material-icons right">warning</i></a>
+              {% endif %}
 
 
     </form>
