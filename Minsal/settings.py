@@ -135,14 +135,17 @@ LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'locale'),
 )
 
+# TIME_ZONE = 'UTC-06'
 TIME_ZONE = 'America/El_Salvador'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
+DATE_INPUT_FORMATS = ('%m/%d/%Y')
+DATETIME_INPUT_FORMATS = ('%m/%d/%Y %H:%M:%S %p')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
