@@ -64,15 +64,17 @@
       <ul class="nav navbar-nav">
           <li><a href="/base">Inicio</a></li>
 
-
-       <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown">  Gestion de Solicitudes<span class="caret"></span></a>
-       <ul class="dropdown-menu">
+       {%if perms.Proyecto_web.add_visita%}
+        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown">  Gestion de Solicitudes<span class="caret"></span></a>
+         <ul class="dropdown-menu">
             <li><a href="/solicitud_visita">Solicitar Visita</a></li>
+           {%if perms.Proyecto_web.change_visita%}
             <li><a  href="/lista_solicitudes">Solicitudes a Asignar </a></li>
-
+           {% endif %}
        </ul>
+       {% endif %}
 
-        {%if perms.Proyecto_web.change_visita %}
+        {%if perms.Proyecto_web.add_conductor and perms.Proyecto_web.change_conductor and perms.Proyecto_web.add_vehiculo and perms.Proyecto_web.change_vehiculo%}
             <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown">  Gestion Recursos<span class="caret"></span></a>
         <ul class="dropdown-menu">
             <li><a href="/agregar_vehiculo"> Agregar Unidades</a></li>
@@ -81,18 +83,24 @@
             <li><a href="/conductores"> Conductores Unidad</a></li>
 
         </ul>
+          {% endif %}
 
-
+           {%if perms.Proyecto_web.add_visita%}
             <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"> Gestion de Visitas <span class="caret"></span></a>
-        <ul class="dropdown-menu">
+         <ul class="dropdown-menu">
+            {%if perms.Proyecto_web.add_incidencia and perms.Proyecto_web.add_mantenimiento  %}
              <li><a href="/visitas_finalizadas"> Visitas Finalizadas</a></li>
+                {% endif %}
              <li><a href="/mis_visitas"> Mis visitas</a></li>
              <li><a  href="/mis_aprobadas">Solicitudes Aprobadas </a></li>
         </ul>
+              {% endif %}
 
-        <li><a href="/proximos_mantenimientos">Mantenimientos Proximos </a></li>
+            {%if perms.Proyecto_web.add_mantenimiento %}
+              <li><a href="/proximos_mantenimientos">Mantenimientos Proximos </a></li>
+            {% endif %}
 
-          {% endif %}
+
 
       </ul>
       <ul class="nav navbar-nav navbar-right">

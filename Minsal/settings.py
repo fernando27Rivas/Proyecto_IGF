@@ -117,6 +117,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+#AUTHENTICATION_BACKENDS = ('Minsal.Proyecto_web.backends.CaseInsensitiveModelBackend',)
+
 
 
 # Internationalization
