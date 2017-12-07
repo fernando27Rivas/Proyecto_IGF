@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'Minsal.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'minsal_2',
+        'NAME': 'minsal',
         'USER': 'igf_gpo6',
         'PASSWORD': 'django',
         'HOST': 'localhost',
