@@ -54,7 +54,7 @@ urlpatterns=[
 
     #URL Login/Logout
     # Metela a patita
-    url(r'^login/$', views.minsal_login, name='minsal_login'),
+    url(r'^$', views.minsal_login, name='minsal_login'),
       #se accede por menu
     url(r'^logout/$', views.minsal_logout, name='minsal_logout'),
 

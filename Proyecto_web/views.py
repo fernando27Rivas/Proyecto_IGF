@@ -471,7 +471,8 @@ def minsal_login(request):
 @login_required
 def minsal_logout(request):
     logout(request)
-    return HttpResponseRedirect('/login')
+    url=reverse('minsal_login')
+    return HttpResponseRedirect(url)
 
 @login_required
 def Asignar_visita(request,id_visita,id_asignar):

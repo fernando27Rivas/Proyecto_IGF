@@ -44,7 +44,7 @@ class Vehiculo(models.Model):
         return self.placa
 
     class Meta:
-        managed = False
+       # managed = False
         db_table = 'vehiculo'
         ordering = ["id_vehiculo"]
 
@@ -61,7 +61,7 @@ class UnidadOrganizacional(models.Model):
         return self.nombre
 
     class Meta:
-        managed = False
+        #managed = False
         db_table = 'unidad_organizacional'
 
 
@@ -74,7 +74,7 @@ class Proveedor(models.Model):
         return self.nombre
 
     class Meta:
-        managed = False
+       # managed = False
         db_table = 'proveedor'
 
 class Mantenimiento(models.Model):
@@ -90,7 +90,7 @@ class Mantenimiento(models.Model):
         return '{} {}'.format( self.fecha_actual,self.id_vehiculo.placa)
 
     class Meta:
-        managed = False
+        #managed = False
         db_table = 'mantenimiento'
 
 
@@ -103,7 +103,7 @@ class Usuario(models.Model):
         return '{} {}'.format(self.id_user.get_username(), self.id_unidad.nombre)
 
     class Meta:
-        managed = False
+       # managed = False
         db_table = 'usuario'
 
 
@@ -120,7 +120,7 @@ class Conductor(models.Model):
         return self.nombre
 
     class Meta:
-       managed = False
+      # managed = False
        db_table = 'conductor'
 
 
@@ -134,13 +134,13 @@ class Visita(models.Model):
     estado = models.SmallIntegerField()
     destino = models.CharField('Destino viaje', max_length=100,null=False,blank=False)
     id_conductor=models.ForeignKey("Conductor",db_column='id_conductor',null=True,blank=True)
-    user = models.OneToOneField(User, null=True,db_column='id_user', help_text='Usuario relacionado')
+    user = models.ForeignKey(User, null=True,db_column='id_user', help_text='Usuario relacionado')
 
     def __str__(self):
         return '{} {}'.format( self.id_vehiculo,self.fecha_solicitud)
 
     class Meta:
-        managed = False
+        #managed = False
         db_table = 'visita'
 
 class Incidencia(models.Model):
@@ -156,5 +156,5 @@ class Incidencia(models.Model):
         return '{} {}'.format( self.id_vehiculo.placa,self.fecha)
 
     class Meta:
-        managed = False
+       # managed = False
         db_table = 'incidencia'

@@ -25,10 +25,6 @@ SECRET_KEY = '4-7$b-h(l@*j)u*_@!m(*7nw90dte=b%0*by1d!lyqawy&7e+&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
-
-
 # Application definition
 
 
@@ -60,7 +56,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'Minsal.urls'
 LOGOUT_REDIRECT_URL = '/admin/login/'
-LOGIN_URL = '/login'
+LOGIN_URL = 'minsal_login'
 
 TEMPLATES = [
     {
@@ -90,7 +86,7 @@ WSGI_APPLICATION = 'Minsal.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'minsal',
+        'NAME': 'minsal_2',
         'USER': 'igf_gpo6',
         'PASSWORD': 'django',
         'HOST': 'localhost',
